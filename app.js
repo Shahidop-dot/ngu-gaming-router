@@ -1,100 +1,348 @@
-const data = [
-  {
-    name:"Linksys EA6350", wifi:"Wi-Fi 5", cls:"AC1200", bands:"Dual-band",
-    best:"Value / basic homes", image:"https://m.media-amazon.com/images/I/51TAjZc7FpL.jpg",
-    note:"Dual-band AC1200 Gigabit router."
-  },
-  {
-    name:"Linksys EA8100", wifi:"Wi-Fi 5", cls:"AC2600", bands:"Dual-band",
-    best:"Gaming / OpenWrt setups", image:"https://cassette.sphdigital.com.sg/image/hardwarezone/d9ece4b1d62aa098f85ccfbf20a1b0c6e30a8c1861d14782479ec0b022b35d65?q=85&w=1000",
-    note:"AC2600-class dual-band router with 4x4 5GHz."
-  },
-  {
-    name:"Linksys MR9000X", wifi:"Wi-Fi 5", cls:"AC3000", bands:"Tri-band",
-    best:"Mixed homes / mesh", image:"https://unitytech.uy/wp-content/uploads/2021/10/Router-Linksys-Mr9000-Mesh-Triband-Ac3000-Mu-mimo-1.jpg",
-    note:"AC3000 tri-band mesh router."
-  },
-  {
-    name:"NETGEAR XR500", wifi:"Wi-Fi 5", cls:"AC2600", bands:"Dual-band",
-    best:"Gaming / DumaOS", image:"https://cdn.cs.1worldsync.com/02/3f/023f0eca-f8ba-4e9f-947f-ace686a1a490.jpg",
-    note:"Gaming router with DumaOS and QoS controls."
-  },
-  {
-    name:"NETGEAR R8000P", wifi:"Wi-Fi 5", cls:"AC4000", bands:"Tri-band",
-    best:"Heavy multi-device homes", image:"https://www.netgear.com/zone3/cid/fit/1024x633/to/jpg/https/www.netgear.com/cn/media/R8000P_productcarousel_hero_image_tcm172-106347.png",
-    note:"Nighthawk X6S AC4000 tri-band router."
-  },
-  {
-    name:"NETGEAR R8500", wifi:"Wi-Fi 5", cls:"AC5300", bands:"Tri-band",
-    best:"Maximum AC throughput", image:"https://www.netonnet.se/GetFile/ProductImagePrimary/%28229568%29_237837_largeHD.webp",
-    note:"Nighthawk X8 AC5300 tri-band router."
-  },
-  {
-    name:"ASUS RT-AX82U", wifi:"Wi-Fi 6", cls:"AX5400", bands:"Dual-band",
-    best:"Gaming / Wi-Fi 6", image:"https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6532/6532136_sd.jpg",
-    note:"Wi-Fi 6 AX5400 gaming router with 160 MHz support."
-  }
-];
+const SUPABASE_URL = "https://khglefqussfkwmayfzqt.supabase.co";
+const SUPABASE_KEY = "sb_publishable_vLxoVA_v7VvnbQpSPzWfIw_ZoaiXrFz";
+
+let data = [];
 
 const products = document.querySelector("#products");
 const table = document.querySelector("#table");
 const count = document.querySelector("#count");
 
-function waLink(name){
-  const msg = encodeURIComponent(`Hi NGU, I'm interested in the ${name}. Please send me availability, price and gaming configuration details.`);
+function waLink(name) {
+  const msg = encodeURIComponent(
+    `Hi NGU, I'm interested in the ${name}. Please send me availability, price and gaming configuration details.`
+  );
   return `https://wa.me/923700821811?text=${msg}`;
 }
 
-function render(filter="all"){
-  const d = filter==="all" ? data : data.filter(x=>x.wifi===filter);
-  count.textContent = d.length + " systems";
-  products.innerHTML = d.map(x=>`
-    <article class="product">
-      <div class="product-image"><img src="${x.image}" alt="${x.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('fallback')"><div class="mini">NGU</div></div>
-      <div class="body">
-        <span class="badge">NGU CATALOG</span>
-        <h3>${x.name}</h3>
-        <p>${x.note}</p>
-        <div class="specs"><span>${x.wifi}</span><span>${x.cls}</span><span>${x.bands}</span></div>
-        <div class="bottom"><strong>Price on request</strong><a href="${waLink(x.name)}" target="_blank" rel="noopener">Ask about it →</a></div>
+async function loadProducts() {
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/products?select=*`,
+      {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Supabase error: ${response.status}`);
+    }
+
+    const rows = await response.json();
+
+    data = rows
+      .filter(x => x.active !== false)
+      .map(x => ({
+        name: x.name || "Unknown router",
+        wifi: x.wifi || "",
+        cls: x.wifi_class || "",
+        bands: x.bands || "",
+        best: x.best_for || "",
+        image: x.image_url || "",
+        note: x.description || "",
+        price: x.price,
+        priceOnRequest: x.price_on_request,
+        stock: x.stock,
+        specifications: x.specifications || {}
+      }));
+
+    render();
+
+  } catch (error) {
+    console.error("NGU Supabase error:", error);
+
+    products.innerHTML = `
+      <div class="empty">
+        <strong>Unable to load router catalog.</strong>
+        <p>Please try refreshing the page.</p>
       </div>
-    </article>`).join("");
+    `;
 
-  table.innerHTML = d.map(x=>`<tr><td>${x.name}</td><td>${x.wifi}</td><td>${x.cls}</td><td>${x.bands}</td><td>${x.best}</td></tr>`).join("");
+    count.textContent = "Catalog unavailable";
+  }
 }
-render();
 
-document.querySelectorAll(".filters button").forEach(b=>{
-  b.onclick=()=>{
-    document.querySelectorAll(".filters button").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");
-    render(b.dataset.f);
+function render(filter = "all") {
+  const d =
+    filter === "all"
+      ? data
+      : data.filter(x => x.wifi === filter);
+
+  count.textContent = d.length + " systems";
+
+  products.innerHTML = d.map(x => {
+
+    let priceText = "Price on request";
+
+    if (
+      x.priceOnRequest === false &&
+      x.price !== null &&
+      x.price !== undefined
+    ) {
+      priceText = `PKR ${Number(x.price).toLocaleString()}`;
+    }
+
+    return `
+      <article class="product">
+
+        <div class="product-image">
+          ${
+            x.image
+              ? `
+                <img
+                  src="${x.image}"
+                  alt="${x.name}"
+                  loading="lazy"
+                  style="
+                    width:100%;
+                    height:100%;
+                    object-fit:contain;
+                    object-position:center;
+                    display:block;
+                  "
+                  onerror="
+                    this.style.display='none';
+                    this.parentElement.classList.add('fallback');
+                  "
+                >
+              `
+              : ""
+          }
+
+          <div class="mini">NGU</div>
+        </div>
+
+        <div class="body">
+
+          <span class="badge">NGU CATALOG</span>
+
+          <h3>${x.name}</h3>
+
+          <p>${x.note}</p>
+
+          <div class="specs">
+            ${x.wifi ? `<span>${x.wifi}</span>` : ""}
+            ${x.cls ? `<span>${x.cls}</span>` : ""}
+            ${x.bands ? `<span>${x.bands}</span>` : ""}
+          </div>
+
+          <div class="bottom">
+            <strong>${priceText}</strong>
+
+            <a
+              href="${waLink(x.name)}"
+              target="_blank"
+              rel="noopener"
+            >
+              Ask about it →
+            </a>
+          </div>
+
+        </div>
+
+      </article>
+    `;
+  }).join("");
+
+  table.innerHTML = d.map(x => `
+    <tr>
+      <td>${x.name}</td>
+      <td>${x.wifi}</td>
+      <td>${x.cls}</td>
+      <td>${x.bands}</td>
+      <td>${x.best}</td>
+    </tr>
+  `).join("");
+}
+
+
+/* Wi-Fi filters */
+
+document.querySelectorAll(".filters button").forEach(button => {
+
+  button.onclick = () => {
+
+    document
+      .querySelectorAll(".filters button")
+      .forEach(x => x.classList.remove("active"));
+
+    button.classList.add("active");
+
+    render(button.dataset.f);
   };
+
 });
 
-const mobile = document.querySelector("#mobile");
-document.querySelector("#open").onclick=()=>mobile.classList.add("open");
-document.querySelector("#close").onclick=()=>mobile.classList.remove("open");
-document.querySelectorAll(".mobile a").forEach(a=>a.onclick=()=>mobile.classList.remove("open"));
 
-document.querySelector("#find").onclick=()=>{
+/* Mobile menu */
+
+const mobile = document.querySelector("#mobile");
+
+if (document.querySelector("#open")) {
+  document.querySelector("#open").onclick = () =>
+    mobile.classList.add("open");
+}
+
+if (document.querySelector("#close")) {
+  document.querySelector("#close").onclick = () =>
+    mobile.classList.remove("open");
+}
+
+document
+  .querySelectorAll(".mobile a")
+  .forEach(a => {
+    a.onclick = () =>
+      mobile.classList.remove("open");
+  });
+
+
+/* NGU Router Finder */
+
+document.querySelector("#find").onclick = () => {
+
   const speed = +document.querySelector("#speed").value;
   const use = document.querySelector("#use").value;
   const budget = document.querySelector("#budget").value;
-  let p;
 
-  if(use==="gaming" && budget==="high") p="ASUS RT-AX82U";
-  else if(use==="gaming" && speed<=300) p="NETGEAR XR500";
-  else if(use==="gaming") p="ASUS RT-AX82U";
-  else if(use==="pc" && speed<=300) p="Linksys EA8100";
-  else if(use==="home" && budget==="high") p="NETGEAR R8500";
-  else if(use==="home" && budget==="mid") p="NETGEAR R8000P";
-  else if(speed<=100) p="Linksys EA6350";
-  else if(speed<=300) p="Linksys MR9000X";
-  else p="NETGEAR R8000P";
+  let preferredNames = [];
 
-  const item = data.find(x=>x.name===p);
-  const r=document.querySelector("#result");
-  r.style.display="block";
-  r.innerHTML=`<span>NGU MATCH</span><strong>${item.name}</strong><p>${item.note} Recommended as a starting point based on your answers. Final choice should also consider firmware, ISP speed, wired/Wi-Fi usage and actual stock.</p><a href="${waLink(item.name)}" target="_blank" rel="noopener">Ask NGU about this router →</a>`;
+  if (use === "gaming" && budget === "high") {
+    preferredNames = [
+      "ASUS ROG Rapture GT-AX11000",
+      "ASUS ROG Rapture GT-AC5300",
+      "ASUS RT-AX88U",
+      "ASUS RT-AX82U"
+    ];
+  }
+
+  else if (use === "gaming" && speed <= 300) {
+    preferredNames = [
+      "NETGEAR XR500",
+      "ASUS RT-AX82U",
+      "Linksys EA8100"
+    ];
+  }
+
+  else if (use === "gaming") {
+    preferredNames = [
+      "ASUS RT-AX82U",
+      "ASUS RT-AX88U",
+      "NETGEAR XR500"
+    ];
+  }
+
+  else if (use === "pc" && speed <= 300) {
+    preferredNames = [
+      "Linksys EA8100",
+      "Linksys WRT1900ACS",
+      "Linksys WRT3200ACM"
+    ];
+  }
+
+  else if (use === "home" && budget === "high") {
+    preferredNames = [
+      "NETGEAR R8500",
+      "Linksys MX5500",
+      "TP-Link EB810v"
+    ];
+  }
+
+  else if (use === "home" && budget === "mid") {
+    preferredNames = [
+      "NETGEAR R8000P",
+      "Linksys MR9000X",
+      "Linksys MX4200"
+    ];
+  }
+
+  else if (speed <= 100) {
+    preferredNames = [
+      "Linksys EA6350",
+      "Linksys EA8100"
+    ];
+  }
+
+  else if (speed <= 300) {
+    preferredNames = [
+      "Linksys MR9000X",
+      "NETGEAR R8000P"
+    ];
+  }
+
+  else {
+    preferredNames = [
+      "NETGEAR R8000P",
+      "NETGEAR R8500",
+      "Linksys MX5500"
+    ];
+  }
+
+
+  let item = null;
+
+  for (const name of preferredNames) {
+    item = data.find(
+      x => x.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (item) break;
+  }
+
+  if (!item) {
+    item = data.find(x =>
+      use === "gaming"
+        ? x.best.toLowerCase().includes("gaming")
+        : true
+    );
+  }
+
+  if (!item && data.length) {
+    item = data[0];
+  }
+
+
+  const r = document.querySelector("#result");
+
+  r.style.display = "block";
+
+  if (!item) {
+    r.innerHTML = `
+      <span>NGU MATCH</span>
+      <strong>No router found</strong>
+      <p>
+        The router catalog is still loading. Please try again.
+      </p>
+    `;
+
+    return;
+  }
+
+
+  r.innerHTML = `
+    <span>NGU MATCH</span>
+
+    <strong>${item.name}</strong>
+
+    <p>
+      ${item.note}
+      Recommended as a starting point based on your answers.
+      Final choice should also consider firmware, ISP speed,
+      wired/Wi-Fi usage and actual stock.
+    </p>
+
+    <a
+      href="${waLink(item.name)}"
+      target="_blank"
+      rel="noopener"
+    >
+      Ask NGU about this router →
+    </a>
+  `;
 };
+
+
+/* Start */
+
+loadProducts();
