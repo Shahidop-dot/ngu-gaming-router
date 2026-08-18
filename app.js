@@ -69,6 +69,20 @@ function getStock(router) {
 
 
 /* =========================
+   OPEN ROUTER
+   USE HASH — NOT router.html
+========================= */
+
+function goToRouter(id) {
+
+  if (!id) return;
+
+  window.location.hash =
+    `router/${encodeURIComponent(id)}`;
+}
+
+
+/* =========================
    IMAGE FALLBACK
 ========================= */
 
@@ -123,7 +137,8 @@ async function loadProducts() {
     }
 
 
-    const rows = await productResponse.json();
+    const rows =
+      await productResponse.json();
 
 
     const imageResponse = await fetch(
@@ -144,7 +159,8 @@ async function loadProducts() {
     }
 
 
-    const imageRows = await imageResponse.json();
+    const imageRows =
+      await imageResponse.json();
 
 
     const imageMap = {};
@@ -160,9 +176,15 @@ async function loadProducts() {
       if (image.image_url) {
 
         imageMap[image.product_id].push({
+
           url: image.image_url,
-          alt: image.alt_text || "",
-          order: image.sort_order || 0
+
+          alt:
+            image.alt_text || "",
+
+          order:
+            image.sort_order || 0
+
         });
 
       }
@@ -172,7 +194,9 @@ async function loadProducts() {
 
     data = rows
 
-      .filter(x => x.active !== false)
+      .filter(
+        x => x.active !== false
+      )
 
       .map(x => {
 
@@ -183,18 +207,33 @@ async function loadProducts() {
         const allImages = [];
 
 
+        /* Main product image */
+
         if (x.image_url) {
 
           allImages.push({
-            url: x.image_url,
-            alt: x.name || "NGU router"
+
+            url:
+              x.image_url,
+
+            alt:
+              x.name ||
+              "NGU router"
+
           });
 
         }
 
 
+        /* Additional images */
+
         extraImages
-          .sort((a, b) => a.order - b.order)
+
+          .sort(
+            (a, b) =>
+              a.order - b.order
+          )
+
           .forEach(image => {
 
             if (
@@ -205,10 +244,14 @@ async function loadProducts() {
             ) {
 
               allImages.push({
-                url: image.url,
+
+                url:
+                  image.url,
+
                 alt:
                   image.alt ||
                   `${x.name} NGU router`
+
               });
 
             }
@@ -218,7 +261,8 @@ async function loadProducts() {
 
         return {
 
-          id: x.id,
+          id:
+            x.id,
 
           name:
             x.name ||
@@ -272,8 +316,6 @@ async function loadProducts() {
     render();
 
 
-    /* Open router automatically if URL contains #router/ID */
-
     handleRoute();
 
 
@@ -320,8 +362,11 @@ function renderGallery(router) {
       ? router.images
       : router.image
         ? [{
-            url: router.image,
-            alt: router.name
+            url:
+              router.image,
+
+            alt:
+              router.name
           }]
         : [];
 
@@ -342,7 +387,10 @@ function renderGallery(router) {
 
 
   return `
-    <div class="product-gallery">
+    <div
+      class="product-gallery"
+      data-router-image="${escapeHTML(router.id)}"
+    >
 
       <div class="gallery-track">
 
@@ -352,7 +400,9 @@ function renderGallery(router) {
 
             <img
               src="${escapeHTML(image.url)}"
-              alt="${escapeHTML(image.alt || router.name)}"
+              alt="${escapeHTML(
+                image.alt || router.name
+              )}"
               loading="lazy"
               onerror="imageFallback(this)"
             >
@@ -409,6 +459,7 @@ function render(filter = "all") {
 
 
   products.innerHTML =
+
     d.map(x => {
 
       return `
@@ -420,15 +471,21 @@ function render(filter = "all") {
 
           ${renderGallery(x)}
 
+
           <div class="body">
 
             <span class="badge">
               NGU CATALOG
             </span>
 
-            <h3>
-              ${x.name}
-             </h3>
+
+            <h3
+              class="router-name"
+              data-router-id="${escapeHTML(x.id)}"
+            >
+              ${escapeHTML(x.name)}
+            </h3>
+
 
             <p>
               ${escapeHTML(x.note)}
@@ -439,19 +496,31 @@ function render(filter = "all") {
 
               ${
                 x.wifi
-                  ? `<span>${escapeHTML(x.wifi)}</span>`
+                  ? `
+                    <span>
+                      ${escapeHTML(x.wifi)}
+                    </span>
+                  `
                   : ""
               }
 
               ${
                 x.cls
-                  ? `<span>${escapeHTML(x.cls)}</span>`
+                  ? `
+                    <span>
+                      ${escapeHTML(x.cls)}
+                    </span>
+                  `
                   : ""
               }
 
               ${
                 x.bands
-                  ? `<span>${escapeHTML(x.bands)}</span>`
+                  ? `
+                    <span>
+                      ${escapeHTML(x.bands)}
+                    </span>
+                  `
                   : ""
               }
 
@@ -461,7 +530,9 @@ function render(filter = "all") {
             <div class="bottom">
 
               <strong>
-                ${escapeHTML(getPrice(x))}
+                ${escapeHTML(
+                  getPrice(x)
+                )}
               </strong>
 
 
@@ -484,6 +555,7 @@ function render(filter = "all") {
 
 
   table.innerHTML =
+
     d.map(x => `
 
       <tr>
@@ -525,13 +597,17 @@ function openRouter(router) {
 
 
   let detail =
-    document.querySelector("#router-detail");
+    document.querySelector(
+      "#router-detail"
+    );
 
 
   if (!detail) {
 
     detail =
-      document.createElement("section");
+      document.createElement(
+        "section"
+      );
 
     detail.id =
       "router-detail";
@@ -539,7 +615,9 @@ function openRouter(router) {
     detail.className =
       "router-detail";
 
-    document.body.appendChild(detail);
+    document.body.appendChild(
+      detail
+    );
 
   }
 
@@ -550,8 +628,11 @@ function openRouter(router) {
       ? router.images
       : router.image
         ? [{
-            url: router.image,
-            alt: router.name
+            url:
+              router.image,
+
+            alt:
+              router.name
           }]
         : [];
 
@@ -563,6 +644,7 @@ function openRouter(router) {
   detail.innerHTML = `
 
     <div class="router-detail-inner">
+
 
       <button
         class="router-back"
@@ -586,29 +668,42 @@ function openRouter(router) {
 
             ${
               images.length
-                ? images.map((image, index) => `
 
-                    <div class="detail-gallery-slide">
+                ? images.map(
+                    (image, index) => `
 
-                      <img
-                        src="${escapeHTML(image.url)}"
-                        alt="${escapeHTML(image.alt || router.name)}"
-                        onerror="imageFallback(this)"
+                      <div
+                        class="detail-gallery-slide"
                       >
 
-                      ${
-                        index === 0
-                          ? `
-                            <span class="detail-photo-tag">
-                              NGU ROUTER
-                            </span>
-                          `
-                          : ""
-                      }
+                        <img
+                          src="${escapeHTML(
+                            image.url
+                          )}"
+                          alt="${escapeHTML(
+                            image.alt ||
+                            router.name
+                          )}"
+                          onerror="imageFallback(this)"
+                        >
 
-                    </div>
+                        ${
+                          index === 0
+                            ? `
+                              <span
+                                class="detail-photo-tag"
+                              >
+                                NGU ROUTER
+                              </span>
+                            `
+                            : ""
+                        }
 
-                  `).join("")
+                      </div>
+
+                    `
+                  ).join("")
+
                 : `
                   <div class="detail-no-image">
                     NGU
@@ -622,7 +717,9 @@ function openRouter(router) {
           ${
             images.length > 1
               ? `
-                <div class="detail-gallery-hint">
+                <div
+                  class="detail-gallery-hint"
+                >
                   SWIPE FOR MORE →
                 </div>
               `
@@ -642,35 +739,80 @@ function openRouter(router) {
 
 
           <h1>
-            ${escapeHTML(router.name)}
+            ${escapeHTML(
+              router.name
+            )}
           </h1>
 
 
-          <p class="detail-description">
-            ${escapeHTML(router.note)}
+          <p
+            class="detail-description"
+          >
+            ${escapeHTML(
+              router.note
+            )}
           </p>
 
 
           <div class="detail-spec-grid">
 
             <div>
-              <small>WI-FI</small>
-              <strong>${escapeHTML(router.wifi || "—")}</strong>
+
+              <small>
+                WI-FI
+              </small>
+
+              <strong>
+                ${escapeHTML(
+                  router.wifi || "—"
+                )}
+              </strong>
+
             </div>
 
-            <div>
-              <small>CLASS</small>
-              <strong>${escapeHTML(router.cls || "—")}</strong>
-            </div>
 
             <div>
-              <small>BANDS</small>
-              <strong>${escapeHTML(router.bands || "—")}</strong>
+
+              <small>
+                CLASS
+              </small>
+
+              <strong>
+                ${escapeHTML(
+                  router.cls || "—"
+                )}
+              </strong>
+
             </div>
 
+
             <div>
-              <small>BEST FOR</small>
-              <strong>${escapeHTML(router.best || "—")}</strong>
+
+              <small>
+                BANDS
+              </small>
+
+              <strong>
+                ${escapeHTML(
+                  router.bands || "—"
+                )}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <small>
+                BEST FOR
+              </small>
+
+              <strong>
+                ${escapeHTML(
+                  router.best || "—"
+                )}
+              </strong>
+
             </div>
 
           </div>
@@ -680,10 +822,14 @@ function openRouter(router) {
 
             <div>
 
-              <small>NGU PRICE</small>
+              <small>
+                NGU PRICE
+              </small>
 
               <strong>
-                ${escapeHTML(getPrice(router))}
+                ${escapeHTML(
+                  getPrice(router)
+                )}
               </strong>
 
             </div>
@@ -700,7 +846,9 @@ function openRouter(router) {
 
             <a
               class="detail-whatsapp"
-              href="${waLink(router.name)}"
+              href="${waLink(
+                router.name
+              )}"
               target="_blank"
               rel="noopener"
             >
@@ -717,9 +865,13 @@ function openRouter(router) {
 
       <!-- FULL SPECIFICATIONS -->
 
-      <section class="detail-specifications">
+      <section
+        class="detail-specifications"
+      >
 
-        <div class="detail-section-heading">
+        <div
+          class="detail-section-heading"
+        >
 
           <span>
             TECHNICAL DATA
@@ -732,45 +884,74 @@ function openRouter(router) {
         </div>
 
 
-        <div class="specification-list">
+        <div
+          class="specification-list"
+        >
 
           ${
-            Object.keys(specifications).length
+            Object.keys(
+              specifications
+            ).length
 
-              ? Object.entries(specifications)
-                  .map(([key, value]) => `
+              ? Object.entries(
+                  specifications
+                )
+                .map(
+                  ([key, value]) => `
 
-                    <div class="specification-row">
+                    <div
+                      class="specification-row"
+                    >
 
                       <span>
                         ${escapeHTML(
                           String(key)
-                            .replace(/_/g, " ")
-                            .replace(/\b\w/g, c =>
-                              c.toUpperCase()
+                            .replace(
+                              /_/g,
+                              " "
+                            )
+                            .replace(
+                              /\b\w/g,
+                              c =>
+                                c.toUpperCase()
                             )
                         )}
                       </span>
 
                       <strong>
                         ${
-                          typeof value === "boolean"
+                          typeof value ===
+                          "boolean"
+
                             ? value
                               ? "Yes"
                               : "No"
-                            : escapeHTML(value)
+
+                            : escapeHTML(
+                                value
+                              )
                         }
                       </strong>
 
                     </div>
 
-                  `)
-                  .join("")
+                  `
+                )
+                .join("")
 
               : `
-                <div class="specification-row">
-                  <span>Specifications</span>
-                  <strong>Available on request</strong>
+                <div
+                  class="specification-row"
+                >
+
+                  <span>
+                    Specifications
+                  </span>
+
+                  <strong>
+                    Available on request
+                  </strong>
+
                 </div>
               `
           }
@@ -782,7 +963,9 @@ function openRouter(router) {
 
       <!-- NGU FEATURES -->
 
-      <section class="ngu-detail-features">
+      <section
+        class="ngu-detail-features"
+      >
 
         <div>
 
@@ -797,45 +980,80 @@ function openRouter(router) {
         </div>
 
 
-        <div class="ngu-feature-list">
+        <div
+          class="ngu-feature-list"
+        >
 
           <div>
-            <b>01</b>
-            <strong>Advanced Traffic Control</strong>
+
+            <b>
+              01
+            </b>
+
+            <strong>
+              Advanced Traffic Control
+            </strong>
+
             <p>
-              Gaming-focused traffic management designed
-              to keep important traffic responsive.
+              Gaming-focused traffic management
+              designed to keep important traffic
+              responsive.
             </p>
+
           </div>
 
 
           <div>
-            <b>02</b>
-            <strong>Latency-Focused Tuning</strong>
+
+            <b>
+              02
+            </b>
+
+            <strong>
+              Latency-Focused Tuning
+            </strong>
+
             <p>
-              Configuration focused on responsive gaming
-              and consistent network behavior.
+              Configuration focused on responsive
+              gaming and consistent network behavior.
             </p>
+
           </div>
 
 
           <div>
-            <b>03</b>
-            <strong>Wi-Fi Optimization</strong>
+
+            <b>
+              03
+            </b>
+
+            <strong>
+              Wi-Fi Optimization
+            </strong>
+
             <p>
-              Wireless configuration tuned for everyday
-              use and gaming workloads.
+              Wireless configuration tuned for
+              everyday use and gaming workloads.
             </p>
+
           </div>
 
 
           <div>
-            <b>04</b>
-            <strong>Performance Enhancements</strong>
+
+            <b>
+              04
+            </b>
+
+            <strong>
+              Performance Enhancements
+            </strong>
+
             <p>
-              NGU configuration designed around the
-              hardware's capabilities.
+              NGU configuration designed around
+              the hardware's capabilities.
             </p>
+
           </div>
 
         </div>
@@ -856,10 +1074,14 @@ function openRouter(router) {
 
 
     </div>
+
   `;
 
 
-  detail.classList.add("active");
+  detail.classList.add(
+    "active"
+  );
+
 
   document.body.classList.add(
     "router-detail-open"
@@ -873,13 +1095,17 @@ function openRouter(router) {
 
 
   document
-    .querySelector("#router-back")
+    .querySelector(
+      "#router-back"
+    )
     .onclick =
       closeRouter;
 
 
   document
-    .querySelector("#router-back-bottom")
+    .querySelector(
+      "#router-back-bottom"
+    )
     .onclick =
       closeRouter;
 
@@ -893,11 +1119,15 @@ function openRouter(router) {
 function closeRouter() {
 
   const detail =
-    document.querySelector("#router-detail");
+    document.querySelector(
+      "#router-detail"
+    );
 
 
   if (detail) {
-    detail.classList.remove("active");
+    detail.classList.remove(
+      "active"
+    );
   }
 
 
@@ -941,7 +1171,9 @@ function handleRoute() {
 
 
   if (
-    hash.startsWith("#router/")
+    hash.startsWith(
+      "#router/"
+    )
   ) {
 
     const id =
@@ -955,7 +1187,9 @@ function handleRoute() {
 
     const router =
       data.find(
-        x => String(x.id) === String(id)
+        x =>
+          String(x.id) ===
+          String(id)
       );
 
 
@@ -975,33 +1209,188 @@ window.addEventListener(
 
 
 /* =========================
-   PRODUCT CLICK
+   PRODUCT CLICK SYSTEM
 ========================= */
+
+/*
+   Clicking:
+
+   • router picture
+   • router name
+   • View details
+
+   all use the SAME #router/ID route.
+
+   This fixes the 404 problem caused by
+   router.html?id=...
+*/
+
+let galleryTouchStartX = 0;
+let galleryTouchMoved = false;
+
+
+products.addEventListener(
+  "touchstart",
+  event => {
+
+    if (
+      event.target.closest(
+        ".gallery-track"
+      )
+    ) {
+
+      galleryTouchStartX =
+        event.touches[0].clientX;
+
+      galleryTouchMoved =
+        false;
+
+    }
+
+  },
+  {
+    passive: true
+  }
+);
+
+
+products.addEventListener(
+  "touchmove",
+  event => {
+
+    if (
+      event.target.closest(
+        ".gallery-track"
+      )
+    ) {
+
+      const currentX =
+        event.touches[0].clientX;
+
+      if (
+        Math.abs(
+          currentX -
+          galleryTouchStartX
+        ) > 10
+      ) {
+
+        galleryTouchMoved =
+          true;
+
+      }
+
+    }
+
+  },
+  {
+    passive: true
+  }
+);
+
 
 products.addEventListener(
   "click",
   event => {
 
-    const link =
+    /*
+      Do not open details when the
+      user was actually swiping images.
+    */
+
+    if (galleryTouchMoved) {
+
+      galleryTouchMoved =
+        false;
+
+      return;
+
+    }
+
+
+    /*
+      WhatsApp / external links
+      should work normally.
+    */
+
+    if (
+      event.target.closest(
+        "a[href^='https://wa.me']"
+      )
+    ) {
+      return;
+    }
+
+
+    /*
+      Existing View details button.
+    */
+
+    const detailsLink =
       event.target.closest(
         ".router-details-link"
       );
 
 
-    if (!link) return;
+    if (detailsLink) {
 
-    event.preventDefault();
+      event.preventDefault();
+
+      const product =
+        detailsLink.closest(
+          ".product"
+        );
 
 
-    const hash =
-      link.getAttribute("href");
+      if (!product) return;
 
 
-    window.location.hash =
-      hash.replace(
-        "#router/",
-        "#router/"
+      goToRouter(
+        product.dataset.routerId
       );
+
+      return;
+
+    }
+
+
+    /*
+      Router name.
+    */
+
+    const routerName =
+      event.target.closest(
+        ".router-name"
+      );
+
+
+    if (routerName) {
+
+      goToRouter(
+        routerName.dataset.routerId
+      );
+
+      return;
+
+    }
+
+
+    /*
+      Router picture.
+    */
+
+    const gallery =
+      event.target.closest(
+        ".product-gallery"
+      );
+
+
+    if (gallery) {
+
+      goToRouter(
+        gallery.dataset.routerImage
+      );
+
+    }
 
   }
 );
@@ -1012,7 +1401,9 @@ products.addEventListener(
 ========================= */
 
 document
-  .querySelectorAll(".filters button")
+  .querySelectorAll(
+    ".filters button"
+  )
   .forEach(button => {
 
     button.onclick = () => {
@@ -1022,7 +1413,9 @@ document
           ".filters button"
         )
         .forEach(x =>
-          x.classList.remove("active")
+          x.classList.remove(
+            "active"
+          )
         );
 
 
@@ -1051,7 +1444,9 @@ const mobile =
 
 
 if (
-  document.querySelector("#open")
+  document.querySelector(
+    "#open"
+  )
 ) {
 
   document.querySelector(
@@ -1068,7 +1463,9 @@ if (
 
 
 if (
-  document.querySelector("#close")
+  document.querySelector(
+    "#close"
+  )
 ) {
 
   document.querySelector(
