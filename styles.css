@@ -1479,3 +1479,148 @@ body.router-detail-open {
     }
 
 }
+/* =========================================================
+   NGU MOBILE FULL-WIDTH FIX
+   ========================================================= */
+
+html {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+main {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+header {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+section,
+footer,
+.ticker {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.section,
+.finder,
+.contact,
+.control {
+    width: 100%;
+    min-width: 0;
+    max-width: 1450px;
+}
+
+/* Prevent grid children from forcing the page wider */
+.hero,
+.products,
+.control,
+.finder,
+.contact,
+.head {
+    min-width: 0;
+}
+
+.hero > *,
+.products > *,
+.control > *,
+.finder > *,
+.contact > * {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 560px) {
+
+    html,
+    body {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    main {
+        width: 100%;
+        min-width: 0;
+    }
+
+    header {
+        width: 100%;
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .hero {
+        width: 100%;
+        min-width: 0;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .section,
+    .finder,
+    .contact,
+    .control {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .products {
+        width: 100%;
+        min-width: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .product {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .product-gallery {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .gallery-track {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .gallery-slide {
+        min-width: 0;
+    }
+
+    .body {
+        min-width: 0;
+    }
+
+    .body h3,
+    .body p {
+        overflow-wrap: anywhere;
+    }
+
+    footer {
+        width: 100%;
+        min-width: 0;
+    }
+}
