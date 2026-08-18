@@ -431,9 +431,10 @@ function render(filter = "all") {
 
 
             <h3>
-              ${escapeHTML(x.name)}
-            </h3>
-
+  <a href="router.html?id=${encodeURIComponent(x.id)}">
+    ${x.name}
+  </a>
+</h3>
 
             <p>
               ${escapeHTML(x.note)}
