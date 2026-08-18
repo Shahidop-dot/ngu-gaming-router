@@ -1947,3 +1947,319 @@ footer {
         max-width: 100%;
     }
 }
+/* =========================================================
+   NGU FINAL PHONE FIX
+========================================================= */
+
+/* Never allow the main page to become wider than the viewport */
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+main {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+
+/* =========================================================
+   TICKER FIX
+========================================================= */
+
+.ticker {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.ticker::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* =========================================================
+   IMPORTANT:
+   Some Android browsers/Desktop-site mode report a
+   viewport around 980px even on a phone.
+
+   Using 1100px here makes the mobile layout activate
+   correctly in that situation.
+========================================================= */
+
+@media screen and (max-width: 1100px) {
+
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow-x: hidden;
+    }
+
+    header {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    nav,
+    .talk {
+        display: none;
+    }
+
+    .menu-btn {
+        display: block;
+    }
+
+    .brand small {
+        display: none;
+    }
+
+
+    /* HERO */
+
+    .hero {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        grid-template-columns: 1fr;
+        padding: 80px 24px;
+        overflow: hidden;
+    }
+
+    .copy {
+        width: 100%;
+        max-width: 700px;
+        min-width: 0;
+    }
+
+    .device {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        height: 320px;
+        margin-top: 40px;
+        overflow: hidden;
+    }
+
+    .radar {
+        display: none;
+    }
+
+
+    /* SECTIONS */
+
+    .section,
+    .finder,
+    .contact,
+    .control {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        padding: 80px 24px;
+    }
+
+
+    /* HEADINGS */
+
+    .head {
+        display: block;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .head > * {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .head > p {
+        margin-top: 30px;
+    }
+
+
+    /* PRODUCTS */
+
+    .products {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .product {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .product-gallery {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .gallery-track {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+
+    /* CONTROL */
+
+    .control {
+        grid-template-columns: 1fr;
+    }
+
+    .chart {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow: hidden;
+    }
+
+
+    /* FINDER */
+
+    .finder {
+        grid-template-columns: 1fr;
+    }
+
+
+    /* CONTACT */
+
+    .contact {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* =========================================================
+   ACTUAL SMALL PHONE
+========================================================= */
+
+@media screen and (max-width: 560px) {
+
+    header {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .hero {
+        padding: 65px 18px;
+    }
+
+    .hero h1 {
+        font-size: clamp(48px, 14vw, 70px);
+        line-height: .86;
+    }
+
+    .hero p {
+        font-size: 16px;
+        line-height: 1.7;
+    }
+
+    .device {
+        height: 260px;
+    }
+
+    .router {
+        width: 90%;
+        max-width: 420px;
+    }
+
+    .device aside {
+        left: 10px;
+        max-width: 240px;
+    }
+
+
+    .section,
+    .finder,
+    .contact,
+    .control {
+        padding: 65px 18px;
+    }
+
+
+    /* Keep 2 routers per row */
+    .products {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .product {
+        min-width: 0;
+        overflow: hidden;
+    }
+
+
+    /* Router images */
+
+    .gallery-slide {
+        height: 145px;
+        padding: 7px;
+    }
+
+
+    /* Router text */
+
+    .body {
+        padding: 14px;
+        min-width: 0;
+    }
+
+    .body h3 {
+        font-size: 21px;
+        line-height: 1.15;
+    }
+
+    .body p {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .specs {
+        gap: 4px;
+        margin: 14px 0;
+    }
+
+    .specs span {
+        padding: 5px 6px;
+        font-size: 8px;
+    }
+
+
+    /* Ticker */
+
+    .ticker {
+        width: 100%;
+        max-width: 100%;
+        padding: 20px 18px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+    }
+
+
+    footer {
+        width: 100%;
+        max-width: 100%;
+    }
+}
