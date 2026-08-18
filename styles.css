@@ -556,6 +556,561 @@ h2 span {
     border: 1px solid #263026;
     padding: 40px;
 }
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: #070a08;
+    color: #f2f5f0;
+    font-family: Inter, sans-serif;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button,
+select {
+    font: inherit;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    height: 76px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(7, 10, 8, .92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid #182018;
+    display: flex;
+    align-items: center;
+    padding: 0 5vw;
+    gap: 34px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+}
+
+.brand b {
+    width: 40px;
+    height: 40px;
+    background: #9cff19;
+    color: #071007;
+    display: grid;
+    place-items: center;
+    font: 700 22px Space Grotesk;
+    clip-path: polygon(
+        0 18%,
+        18% 0,
+        82% 0,
+        100% 18%,
+        100% 82%,
+        82% 100%,
+        18% 100%,
+        0 82%
+    );
+}
+
+.brand strong {
+    font: 700 25px Space Grotesk;
+    letter-spacing: .18em;
+}
+
+.brand small {
+    font: 12px DM Mono;
+    letter-spacing: .24em;
+    color: #8b938c;
+}
+
+nav {
+    display: flex;
+    gap: 26px;
+    margin-left: auto;
+    font-size: 14px;
+    color: #aeb5ae;
+}
+
+nav a:hover,
+.talk:hover {
+    color: #9cff19;
+}
+
+.talk {
+    border: 1px solid #303830;
+    padding: 12px 16px;
+    font-weight: 700;
+}
+
+.menu-btn {
+    display: none;
+    margin-left: auto;
+    background: none;
+    border: 0;
+    color: #fff;
+    font-size: 28px;
+}
+
+/* =========================
+   MOBILE MENU
+========================= */
+
+.mobile {
+    position: fixed;
+    inset: 0 0 0 auto;
+    width: min(360px, 88vw);
+    background: #090c0a;
+    z-index: 50;
+    padding: 28px;
+    transform: translateX(100%);
+    transition: .3s;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    border-left: 1px solid #273027;
+}
+
+.mobile.open {
+    transform: translateX(0);
+}
+
+.mobile button {
+    align-self: flex-end;
+    background: none;
+    border: 0;
+    color: #fff;
+    font-size: 36px;
+}
+
+.mobile small,
+label {
+    font: 12px DM Mono;
+    letter-spacing: .24em;
+    color: #8c968e;
+}
+
+.mobile a {
+    font: 700 25px Space Grotesk;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+    min-height: 690px;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 90px 7vw;
+    overflow: hidden;
+}
+
+.grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(#132014 1px, transparent 1px),
+        linear-gradient(90deg, #132014 1px, transparent 1px);
+    background-size: 110px 110px;
+    opacity: .42;
+}
+
+.copy,
+.device {
+    position: relative;
+    z-index: 2;
+}
+
+.copy {
+    max-width: 700px;
+}
+
+.hero h1 {
+    font: 700 clamp(60px, 8vw, 125px) / .83 Space Grotesk;
+    margin: 28px 0;
+}
+
+h1 span,
+h2 span {
+    color: #9cff19;
+}
+
+.hero p {
+    font-size: 20px;
+    line-height: 1.8;
+    color: #929a94;
+    max-width: 650px;
+}
+
+.buttons {
+    display: flex;
+    gap: 16px;
+    margin-top: 30px;
+}
+
+.buttons a,
+.card a {
+    border: 1px solid #283028;
+    padding: 17px 22px;
+    font-weight: 800;
+}
+
+.lime {
+    background: #9cff19 !important;
+    color: #071007 !important;
+    border-color: #9cff19 !important;
+}
+
+/* =========================
+   STATS
+========================= */
+
+.stats {
+    display: flex;
+    margin-top: 60px;
+    border-left: 1px solid #2a332b;
+}
+
+.stats div {
+    padding: 0 35px;
+    border-right: 1px solid #2a332b;
+}
+
+.stats b {
+    display: block;
+    font: 700 28px Space Grotesk;
+}
+
+.stats small {
+    color: #778078;
+    font: 11px DM Mono;
+    letter-spacing: .15em;
+}
+
+/* =========================
+   HERO ROUTER
+========================= */
+
+.device {
+    height: 520px;
+    display: grid;
+    place-items: center;
+}
+
+.router {
+    width: min(540px, 90%);
+    height: 220px;
+    background: linear-gradient(135deg, #1b211e, #090b0a);
+    border: 1px solid #4a554c;
+    border-radius: 30px;
+    transform: perspective(700px) rotateX(55deg) rotateZ(-4deg);
+    box-shadow: 0 35px 70px #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.router strong {
+    font: 700 30px DM Mono;
+    letter-spacing: .35em;
+}
+
+.router i {
+    position: absolute;
+    width: 10px;
+    height: 130px;
+    background: #171c19;
+    border: 1px solid #465048;
+    border-radius: 10px;
+    top: -95px;
+}
+
+.router i:nth-child(1) {
+    left: 18%;
+}
+
+.router i:nth-child(2) {
+    left: 48%;
+}
+
+.router i:nth-child(3) {
+    right: 18%;
+}
+
+.radar {
+    position: absolute;
+    width: 560px;
+    height: 560px;
+    border: 1px solid #24351f;
+    border-radius: 50%;
+}
+
+.r1 {
+    width: 700px;
+    height: 700px;
+}
+
+.r2 {
+    width: 380px;
+    height: 380px;
+}
+
+.device aside {
+    position: absolute;
+    left: 0;
+    bottom: 20px;
+    border: 1px solid #263026;
+    padding: 28px;
+    width: 260px;
+    background: #070a08cc;
+    font: 11px DM Mono;
+    color: #737d74;
+}
+
+.device aside strong {
+    display: block;
+    color: #fff;
+    font: 700 22px Space Grotesk;
+    margin-top: 14px;
+}
+
+.device aside u {
+    display: block;
+    background: #9cff19;
+    height: 5px;
+    width: 80%;
+    margin-top: 18px;
+    text-decoration: none;
+}
+
+/* =========================
+   TICKER
+========================= */
+
+.ticker {
+    border-block: 1px solid #1a211b;
+    padding: 24px;
+    text-align: center;
+    color: #778078;
+    font: 12px DM Mono;
+    letter-spacing: .2em;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* =========================
+   GENERAL SECTIONS
+========================= */
+
+.section,
+.finder,
+.contact,
+.control {
+    padding: 110px 5vw;
+    max-width: 1450px;
+    margin: auto;
+}
+
+.head {
+    display: flex;
+    justify-content: space-between;
+    gap: 50px;
+    align-items: end;
+}
+
+.head h2,
+.control h2,
+.finder h2,
+.contact h2 {
+    font: 700 clamp(45px, 6vw, 82px) / .95 Space Grotesk;
+    margin: 24px 0;
+}
+
+.head p,
+.control p,
+.finder p,
+.contact p {
+    max-width: 520px;
+    color: #8d968f;
+    font-size: 18px;
+    line-height: 1.8;
+}
+
+/* =========================
+   FILTERS
+========================= */
+
+.filters {
+    display: flex;
+    gap: 10px;
+    margin: 65px 0 30px;
+    align-items: center;
+}
+
+.filters button {
+    background: none;
+    border: 0;
+    color: #777f79;
+    padding: 12px 16px;
+    font: 12px DM Mono;
+    letter-spacing: .12em;
+}
+
+.filters button.active {
+    color: #9cff19;
+}
+
+.filters em {
+    margin-left: auto;
+    color: #777f79;
+    font: 12px DM Mono;
+    font-style: normal;
+}
+
+/* =========================
+   ROUTER PRODUCTS
+   DESKTOP = 2 COLUMNS
+========================= */
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
+}
+
+.product {
+    min-width: 0;
+    border: 1px solid #273027;
+    background: #0a0f0b;
+    overflow: hidden;
+}
+
+.product-image {
+    height: 320px;
+    background: #f5f5f3;
+    display: grid;
+    place-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 15px;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+}
+
+.product-image .mini {
+    display: none;
+    position: absolute;
+    color: #9cff19;
+    font: 700 30px DM Mono;
+    letter-spacing: .3em;
+}
+
+.product-image.fallback {
+    background: #0d130f;
+}
+
+.product-image.fallback .mini {
+    display: block;
+}
+
+/* =========================
+   PRODUCT BODY
+========================= */
+
+.body {
+    padding: 30px;
+}
+
+.badge {
+    display: inline-block;
+    background: #9cff19;
+    color: #071007;
+    padding: 8px 12px;
+    font: 11px DM Mono;
+    font-weight: 700;
+}
+
+.body h3 {
+    font: 700 35px Space Grotesk;
+    margin: 20px 0 10px;
+}
+
+.body p {
+    color: #89928b;
+    line-height: 1.7;
+}
+
+.specs {
+    display: flex;
+    gap: 8px;
+    margin: 25px 0;
+    flex-wrap: wrap;
+}
+
+.specs span {
+    border: 1px solid #293129;
+    padding: 8px 10px;
+    font: 11px DM Mono;
+    color: #aeb7af;
+}
+
+.bottom {
+    border-top: 1px solid #283028;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.bottom a {
+    color: #9cff19;
+    font-weight: 700;
+}
+
+/* =========================
+   CONTROL / CHART
+========================= */
+
+.control {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 70px;
+    align-items: center;
+    border-top: 1px solid #151c16;
+}
+
+.control h2 {
+    max-width: 700px;
+}
+
+.chart {
+    border: 1px solid #263026;
+    padding: 40px;
+}
 
 .chart > div {
     font: 12px DM Mono;
@@ -597,7 +1152,7 @@ h2 span {
 }
 
 /* =========================
-   COMPARISON TABLE
+   TABLE
 ========================= */
 
 .table {
@@ -674,7 +1229,7 @@ h2 span {
     display: block;
     color: #9cff19;
     font: 11px DM Mono;
-    letter-spacing: 0.15em;
+    letter-spacing: .15em;
 }
 
 .form #result strong {
@@ -757,6 +1312,7 @@ footer {
 
 /* =========================
    TABLET
+   2 ROUTERS PER ROW
 ========================= */
 
 @media (max-width: 900px) {
@@ -832,17 +1388,41 @@ footer {
         margin-top: 30px;
     }
 
+    /*
+       TWO ROUTERS PER ROW
+    */
     .products {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
     }
 
     /*
        Keep router photos fully visible
-       on tablets and phones.
     */
     .product-image {
-        height: 260px;
-        padding: 15px;
+        height: 220px;
+        padding: 12px;
+    }
+
+    .body {
+        padding: 20px;
+    }
+
+    .body h3 {
+        font-size: 24px;
+    }
+
+    .body p {
+        font-size: 14px;
+    }
+
+    .specs {
+        margin: 18px 0;
+    }
+
+    .bottom {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     .chart {
@@ -861,6 +1441,7 @@ footer {
 
 /* =========================
    MOBILE
+   2 ROUTERS PER ROW
 ========================= */
 
 @media (max-width: 560px) {
@@ -889,17 +1470,67 @@ footer {
         font-size: 9px;
     }
 
-    .body h3 {
-        font-size: 29px;
+    /*
+       TWO ROUTERS PER ROW ON PHONES
+    */
+    .products {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .product {
+        min-width: 0;
     }
 
     /*
-       Smaller but still fully contained
-       router images on small phones.
+       Compact router cards
     */
     .product-image {
-        height: 220px;
-        padding: 12px;
+        height: 145px;
+        padding: 7px;
+    }
+
+    .body {
+        padding: 14px;
+    }
+
+    .badge {
+        padding: 5px 7px;
+        font-size: 8px;
+    }
+
+    .body h3 {
+        font-size: 17px;
+        line-height: 1.1;
+        margin: 12px 0 8px;
+    }
+
+    .body p {
+        font-size: 11px;
+        line-height: 1.45;
+    }
+
+    .specs {
+        gap: 4px;
+        margin: 12px 0;
+    }
+
+    .specs span {
+        padding: 5px 6px;
+        font-size: 8px;
+    }
+
+    .bottom {
+        padding-top: 12px;
+        gap: 8px;
+    }
+
+    .bottom strong {
+        font-size: 11px;
+    }
+
+    .bottom a {
+        font-size: 11px;
     }
 
     .section,
@@ -912,4 +1543,38 @@ footer {
     header {
         padding: 0 18px;
     }
-}
+
+    .brand strong {
+        font-size: 20px;
+    }
+
+    .brand b {
+        width: 36px;
+        height: 36px;
+        font-size: 19px;
+    }
+
+    .filters {
+        gap: 4px;
+        margin: 40px 0 20px;
+        overflow-x: auto;
+    }
+
+    .filters button {
+        padding: 9px 10px;
+        white-space: nowrap;
+        font-size: 10px;
+    }
+
+    .filters em {
+        display: none;
+    }
+
+    .table {
+        margin-top: 20px;
+    }
+
+    .table table {
+        min-width: 680px;
+    }
+            }
