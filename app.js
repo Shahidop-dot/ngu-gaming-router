@@ -418,10 +418,7 @@ function render(filter = "all") {
           data-router-id="${escapeHTML(x.id)}"
         >
 
-          <a href="router.html?id=${encodeURIComponent(x.id)}" class="router-image-link">
-  ${renderGallery(x)}
-</a>
-
+          ${renderGallery(x)}
 
           <div class="body">
 
