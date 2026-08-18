@@ -28,7 +28,6 @@ function escapeHTML(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
-
 }
 
 
@@ -39,13 +38,8 @@ function waLink(name) {
   );
 
   return `https://wa.me/923700821811?text=${msg}`;
-
 }
 
-
-/* =========================
-   PRICE
-========================= */
 
 function getPrice(router) {
 
@@ -63,19 +57,13 @@ function getPrice(router) {
   }
 
   return "Price on request";
-
 }
 
-
-/* =========================
-   STOCK
-========================= */
 
 function getStock(router) {
 
   const stock =
     Number(router.stock || 0);
-
 
   if (stock > 0) {
 
@@ -87,13 +75,11 @@ function getStock(router) {
 
   }
 
-
   return `
     <span class="stock-status out-stock">
       ● CURRENTLY UNAVAILABLE
     </span>
   `;
-
 }
 
 
@@ -110,22 +96,17 @@ function imageFallback(img) {
     const original =
       img.src;
 
-
     img.src =
       "https://wsrv.nl/?url=" +
       encodeURIComponent(original);
 
     return;
-
   }
-
 
   img.style.display = "none";
 
-
   const parent =
     img.parentElement;
-
 
   if (parent) {
 
@@ -134,18 +115,28 @@ function imageFallback(img) {
     );
 
   }
-
 }
 
 
 /* =========================
    OPEN ROUTER
-   REMEMBERS SCROLL POSITION
+   REMEMBERS SCROLL
 ========================= */
 
 function goToRouter(id) {
 
   if (!id) return;
+
+
+  const router =
+    data.find(
+      x =>
+        String(x.id) ===
+        String(id)
+    );
+
+
+  if (!router) return;
 
 
   /*
@@ -159,8 +150,32 @@ function goToRouter(id) {
     0;
 
 
-  window.location.hash =
-    `router/${encodeURIComponent(id)}`;
+  /*
+    Create a real browser history
+    entry.
+
+    This makes the Android/iPhone
+    Back button work correctly.
+  */
+
+  history.pushState(
+    {
+      routerId:
+        String(id),
+
+      scrollY:
+        routerReturnScrollY
+    },
+    "",
+    `#router/${encodeURIComponent(id)}`
+  );
+
+
+  /*
+    Open the detail page.
+  */
+
+  openRouter(router);
 
 }
 
@@ -178,7 +193,9 @@ async function loadProducts() {
         `${SUPABASE_URL}/rest/v1/products?select=*`,
         {
           headers: {
-            apikey: SUPABASE_KEY,
+            apikey:
+              SUPABASE_KEY,
+
             Authorization:
               `Bearer ${SUPABASE_KEY}`
           }
@@ -208,7 +225,9 @@ async function loadProducts() {
         `${SUPABASE_URL}/rest/v1/product_images?select=product_id,image_url,alt_text,sort_order&order=sort_order.asc`,
         {
           headers: {
-            apikey: SUPABASE_KEY,
+            apikey:
+              SUPABASE_KEY,
+
             Authorization:
               `Bearer ${SUPABASE_KEY}`
           }
@@ -230,7 +249,7 @@ async function loadProducts() {
 
 
     /* =========================
-       GROUP IMAGES
+       GROUP IMAGES BY PRODUCT
     ========================= */
 
     const imageMap = {};
@@ -281,7 +300,8 @@ async function loadProducts() {
       rows
 
         .filter(
-          x => x.active !== false
+          x =>
+            x.active !== false
         )
 
         .map(x => {
@@ -318,16 +338,14 @@ async function loadProducts() {
           */
 
           extraImages
-
             .sort(
               (a, b) =>
                 a.order - b.order
             )
-
             .forEach(image => {
 
               /*
-                Prevent duplicates.
+                Prevent duplicate URLs.
               */
 
               if (
@@ -384,7 +402,7 @@ async function loadProducts() {
               "",
 
             /*
-              Maximum 3 images per router.
+              Maximum 3 images.
             */
 
             images:
@@ -423,8 +441,8 @@ async function loadProducts() {
 
 
     /*
-      If the URL already contains
-      #router/ID, open that router.
+      Open router if URL already
+      contains #router/ID.
     */
 
     handleRoute();
@@ -491,7 +509,7 @@ function renderGallery(router) {
 
 
   /*
-    No image.
+    No image fallback.
   */
 
   if (!images.length) {
@@ -512,10 +530,6 @@ function renderGallery(router) {
 
   }
 
-
-  /*
-    Gallery.
-  */
 
   return `
 
@@ -552,6 +566,7 @@ function renderGallery(router) {
 
               ${
                 index === 0
+
                   ? `
 
                     <span
@@ -561,6 +576,7 @@ function renderGallery(router) {
                     </span>
 
                   `
+
                   : ""
               }
 
@@ -610,7 +626,8 @@ function render(
 
       : data.filter(
           x =>
-            x.wifi === filter
+            x.wifi ===
+            filter
         );
 
 
@@ -622,10 +639,6 @@ function render(
   products.innerHTML =
 
     d.map(x => {
-
-      /*
-        Create router URL.
-      */
 
       const routerHash =
         `#router/${encodeURIComponent(
@@ -642,7 +655,8 @@ function render(
           )}"
         >
 
-          <!-- CLICKABLE ROUTER IMAGE -->
+
+          <!-- ROUTER IMAGE -->
 
           <a
             href="${routerHash}"
@@ -662,12 +676,13 @@ function render(
 
           <div class="body">
 
+
             <span class="badge">
               NGU CATALOG
             </span>
 
 
-            <!-- CLICKABLE ROUTER NAME -->
+            <!-- ROUTER NAME -->
 
             <h3>
 
@@ -678,9 +693,11 @@ function render(
                   x.id
                 )}"
               >
+
                 ${escapeHTML(
                   x.name
                 )}
+
               </a>
 
             </h3>
@@ -695,15 +712,18 @@ function render(
 
             <div class="specs">
 
+
               ${
                 x.wifi
 
                   ? `
+
                     <span>
                       ${escapeHTML(
                         x.wifi
                       )}
                     </span>
+
                   `
 
                   : ""
@@ -714,11 +734,13 @@ function render(
                 x.cls
 
                   ? `
+
                     <span>
                       ${escapeHTML(
                         x.cls
                       )}
                     </span>
+
                   `
 
                   : ""
@@ -729,20 +751,24 @@ function render(
                 x.bands
 
                   ? `
+
                     <span>
                       ${escapeHTML(
                         x.bands
                       )}
                     </span>
+
                   `
 
                   : ""
               }
 
+
             </div>
 
 
             <div class="bottom">
+
 
               <strong>
                 ${escapeHTML(
@@ -751,6 +777,8 @@ function render(
               </strong>
 
 
+              <!-- VIEW DETAILS -->
+
               <a
                 href="${routerHash}"
                 class="router-details-link"
@@ -758,12 +786,17 @@ function render(
                   x.id
                 )}"
               >
+
                 View details →
+
               </a>
+
 
             </div>
 
+
           </div>
+
 
         </article>
 
@@ -772,9 +805,9 @@ function render(
     }).join("");
 
 
-  /*
-    Comparison table.
-  */
+  /* =========================
+     COMPARISON TABLE
+  ========================= */
 
   table.innerHTML =
 
@@ -836,7 +869,7 @@ function openRouter(router) {
 
   /*
     Create detail container
-    the first time it is opened.
+    the first time it opens.
   */
 
   if (!detail) {
@@ -891,7 +924,8 @@ function openRouter(router) {
       class="router-detail-inner"
     >
 
-      <!-- BACK -->
+
+      <!-- BACK BUTTON -->
 
       <button
         class="router-back"
@@ -998,12 +1032,13 @@ function openRouter(router) {
 
 
         <!-- =====================
-             INFORMATION
+             ROUTER INFORMATION
         ====================== -->
 
         <div
           class="router-detail-info"
         >
+
 
           <span
             class="detail-badge"
@@ -1031,6 +1066,7 @@ function openRouter(router) {
           <div
             class="detail-spec-grid"
           >
+
 
             <div>
 
@@ -1095,10 +1131,13 @@ function openRouter(router) {
 
             </div>
 
+
           </div>
 
 
-          <!-- PRICE -->
+          <!-- =====================
+               PRICE + STOCK
+          ====================== -->
 
           <div
             class="detail-price-box"
@@ -1126,7 +1165,9 @@ function openRouter(router) {
           </div>
 
 
-          <!-- WHATSAPP -->
+          <!-- =====================
+               WHATSAPP
+          ====================== -->
 
           <div
             class="detail-actions"
@@ -1145,7 +1186,9 @@ function openRouter(router) {
 
           </div>
 
+
         </div>
+
 
       </div>
 
@@ -1158,6 +1201,7 @@ function openRouter(router) {
         class="detail-specifications"
       >
 
+
         <div
           class="detail-section-heading"
         >
@@ -1165,6 +1209,7 @@ function openRouter(router) {
           <span>
             TECHNICAL DATA
           </span>
+
 
           <h2>
             Full
@@ -1179,6 +1224,7 @@ function openRouter(router) {
         <div
           class="specification-list"
         >
+
 
           ${
             Object.keys(
@@ -1257,7 +1303,9 @@ function openRouter(router) {
               `
           }
 
+
         </div>
+
 
       </section>
 
@@ -1270,11 +1318,13 @@ function openRouter(router) {
         class="ngu-detail-features"
       >
 
+
         <div>
 
           <span>
             NGU CONFIGURATION
           </span>
+
 
           <h2>
             Tuned for
@@ -1290,6 +1340,7 @@ function openRouter(router) {
           class="ngu-feature-list"
         >
 
+
           <div>
 
             <b>
@@ -1301,9 +1352,9 @@ function openRouter(router) {
             </strong>
 
             <p>
-              Gaming-focused traffic
-              management designed to keep
-              important traffic responsive.
+              Gaming-focused traffic management
+              designed to keep important traffic
+              responsive.
             </p>
 
           </div>
@@ -1320,9 +1371,8 @@ function openRouter(router) {
             </strong>
 
             <p>
-              Configuration focused on
-              responsive gaming and
-              consistent network behavior.
+              Configuration focused on responsive
+              gaming and consistent network behavior.
             </p>
 
           </div>
@@ -1339,9 +1389,8 @@ function openRouter(router) {
             </strong>
 
             <p>
-              Wireless configuration tuned
-              for everyday use and gaming
-              workloads.
+              Wireless configuration tuned for
+              everyday use and gaming workloads.
             </p>
 
           </div>
@@ -1358,19 +1407,22 @@ function openRouter(router) {
             </strong>
 
             <p>
-              NGU configuration designed
-              around the hardware's
-              capabilities.
+              NGU configuration designed around
+              the hardware's capabilities.
             </p>
 
           </div>
 
+
         </div>
+
 
       </section>
 
 
-      <!-- BOTTOM BACK BUTTON -->
+      <!-- =====================
+           BOTTOM BACK
+      ====================== -->
 
       <div
         class="detail-bottom"
@@ -1402,13 +1454,17 @@ function openRouter(router) {
 
 
   /*
-    Go to top of detail page.
+    Start the detail page at the top.
   */
 
   window.scrollTo({
+
     top: 0,
+
     left: 0,
+
     behavior: "instant"
+
   });
 
 
@@ -1448,7 +1504,7 @@ function openRouter(router) {
 
 /* =========================
    CLOSE ROUTER
-   RESTORE EXACT POSITION
+   BROWSER BACK SAFE
 ========================= */
 
 function closeRouter() {
@@ -1458,6 +1514,32 @@ function closeRouter() {
       "#router-detail"
     );
 
+
+  /*
+    Do not manually remove the hash
+    here.
+
+    Instead use browser history.
+    This is important because Android's
+    Back button needs the same history.
+  */
+
+  if (
+    window.location.hash.startsWith(
+      "#router/"
+    )
+  ) {
+
+    history.back();
+
+    return;
+
+  }
+
+
+  /*
+    Fallback.
+  */
 
   if (detail) {
 
@@ -1472,33 +1554,6 @@ function closeRouter() {
     "router-detail-open"
   );
 
-
-  /*
-    Remove #router/ID without
-    reloading the page.
-  */
-
-  if (
-    window.location.hash.startsWith(
-      "#router/"
-    )
-  ) {
-
-    history.pushState(
-      "",
-      document.title,
-      window.location.pathname +
-      window.location.search
-    );
-
-  }
-
-
-  /*
-    IMPORTANT:
-    Return to exactly where the
-    visitor opened the router.
-  */
 
   requestAnimationFrame(() => {
 
@@ -1530,36 +1585,90 @@ function handleRoute() {
     window.location.hash;
 
 
+  /*
+    No router hash:
+    show catalog.
+  */
+
   if (
-    hash.startsWith(
+    !hash.startsWith(
       "#router/"
     )
   ) {
 
-    const id =
-      decodeURIComponent(
-        hash.replace(
-          "#router/",
-          ""
-        )
+    const detail =
+      document.querySelector(
+        "#router-detail"
       );
 
 
-    const router =
-      data.find(
-        x =>
-          String(x.id) ===
-          String(id)
-      );
+    if (detail) {
 
-
-    if (router) {
-
-      openRouter(
-        router
+      detail.classList.remove(
+        "active"
       );
 
     }
+
+
+    document.body.classList.remove(
+      "router-detail-open"
+    );
+
+
+    /*
+      Return to exact catalog position.
+    */
+
+    requestAnimationFrame(() => {
+
+      window.scrollTo({
+
+        top:
+          routerReturnScrollY,
+
+        left:
+          0,
+
+        behavior:
+          "instant"
+
+      });
+
+    });
+
+
+    return;
+
+  }
+
+
+  /*
+    Get router ID.
+  */
+
+  const id =
+    decodeURIComponent(
+      hash.replace(
+        "#router/",
+        ""
+      )
+    );
+
+
+  const router =
+    data.find(
+      x =>
+        String(x.id) ===
+        String(id)
+    );
+
+
+  if (router) {
+
+    openRouter(
+      router
+    );
 
   }
 
@@ -1567,18 +1676,40 @@ function handleRoute() {
 
 
 /* =========================
-   HASH CHANGE
+   BROWSER HISTORY
 ========================= */
+
+/*
+  Android/iPhone Back button.
+*/
+
+window.addEventListener(
+  "popstate",
+  () => {
+
+    handleRoute();
+
+  }
+);
+
+
+/*
+  Also support manually changing
+  the URL hash.
+*/
 
 window.addEventListener(
   "hashchange",
-  handleRoute
+  () => {
+
+    handleRoute();
+
+  }
 );
 
 
 /* =========================
-   PRODUCT CLICK
-   IMAGE + NAME + DETAILS
+   PRODUCT CLICK SYSTEM
 ========================= */
 
 products.addEventListener(
@@ -1586,10 +1717,11 @@ products.addEventListener(
   event => {
 
     /*
-      Find any router link.
-      This includes:
+      Find router link.
 
-      - Router picture
+      This covers:
+
+      - Picture
       - Router name
       - View details
     */
@@ -1606,9 +1738,12 @@ products.addEventListener(
 
 
     /*
-      Do not interfere with
-      WhatsApp or other links.
+      Prevent the normal anchor
+      from changing the URL itself.
     */
+
+    event.preventDefault();
+
 
     const routerId =
       link.dataset.routerId;
@@ -1617,9 +1752,6 @@ products.addEventListener(
     if (!routerId) {
       return;
     }
-
-
-    event.preventDefault();
 
 
     goToRouter(
