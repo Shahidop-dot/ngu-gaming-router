@@ -37,7 +37,7 @@ function waLink(name) {
     `Hi NGU, I'm interested in the ${name}. Please send me availability, price and gaming configuration details.`
   );
 
-  return `https://wa.me/923700821811?text=${msg}`;
+  return `https://wa.me/923364351134?text=${msg}`;
 }
 
 
