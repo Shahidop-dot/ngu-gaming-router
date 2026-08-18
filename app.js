@@ -429,12 +429,9 @@ function render(filter = "all") {
               NGU CATALOG
             </span>
 
-
             <h3>
-  <a href="router.html?id=${encodeURIComponent(x.id)}">
-    ${x.name}
-  </a>
-</h3>
+              ${x.name}
+             </h3>
 
             <p>
               ${escapeHTML(x.note)}
