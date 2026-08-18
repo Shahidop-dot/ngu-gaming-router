@@ -1624,3 +1624,326 @@ footer,
         min-width: 0;
     }
 }
+/* =========================================================
+   NGU FINAL RESPONSIVE / MOBILE WIDTH FIX
+========================================================= */
+
+html {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+main {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+
+/* Prevent children from creating a wider page */
+
+header,
+.hero,
+.ticker,
+.section,
+.finder,
+.control,
+.contact,
+footer {
+    min-width: 0;
+    max-width: 100%;
+}
+
+
+/* =========================================================
+   MOBILE / PHONE
+========================================================= */
+
+@media screen and (max-width: 900px) {
+
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow-x: hidden;
+    }
+
+    header {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    nav,
+    .talk {
+        display: none;
+    }
+
+    .menu-btn {
+        display: block;
+    }
+
+    .hero {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        grid-template-columns: minmax(0, 1fr);
+        overflow: hidden;
+    }
+
+    .copy {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .device {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        height: 300px;
+        margin-top: 40px;
+        overflow: hidden;
+    }
+
+    .router {
+        max-width: 90%;
+    }
+
+    .radar {
+        display: none;
+    }
+
+    .section,
+    .finder,
+    .contact,
+    .control {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .head {
+        min-width: 0;
+    }
+
+    .head > * {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .products {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .product {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .product-gallery {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .gallery-track {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .body {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .body h3,
+    .body p {
+        overflow-wrap: anywhere;
+        word-break: normal;
+    }
+
+    .control {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .finder {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .contact {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .chart {
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .table {
+        max-width: 100%;
+        overflow-x: auto;
+    }
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media screen and (max-width: 560px) {
+
+    html,
+    body {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    header {
+        width: 100%;
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .hero {
+        width: 100%;
+        padding-left: 18px;
+        padding-right: 18px;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hero h1 {
+        font-size: clamp(48px, 14vw, 70px);
+        max-width: 100%;
+    }
+
+    .hero p {
+        max-width: 100%;
+        font-size: 16px;
+    }
+
+    .device {
+        width: 100%;
+        height: 260px;
+        overflow: hidden;
+    }
+
+    .router {
+        width: 90%;
+        max-width: 420px;
+    }
+
+    .device aside {
+        left: 10px;
+        max-width: 240px;
+    }
+
+    .ticker {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .section,
+    .finder,
+    .contact,
+    .control {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .head {
+        display: block;
+        width: 100%;
+    }
+
+    .head h2,
+    .control h2,
+    .finder h2,
+    .contact h2 {
+        max-width: 100%;
+        overflow-wrap: normal;
+    }
+
+    .head p,
+    .control p,
+    .finder p,
+    .contact p {
+        max-width: 100%;
+    }
+
+    /* Keep two router cards per row */
+    .products {
+        width: 100%;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .product {
+        width: 100%;
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    .gallery-slide {
+        height: 145px;
+        padding: 7px;
+    }
+
+    .gallery-slide img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .body {
+        width: 100%;
+        min-width: 0;
+        padding: 14px;
+    }
+
+    .body h3 {
+        font-size: 21px;
+        line-height: 1.15;
+    }
+
+    .body p {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .specs {
+        min-width: 0;
+    }
+
+    .bottom {
+        min-width: 0;
+    }
+
+    .bottom strong,
+    .bottom a {
+        overflow-wrap: anywhere;
+    }
+
+    footer {
+        width: 100%;
+        max-width: 100%;
+    }
+}
