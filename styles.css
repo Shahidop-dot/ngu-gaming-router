@@ -2246,20 +2246,75 @@ main {
     }
 
 
-    /* Ticker */
+    /* =========================
+   TICKER
+========================= */
+
+.ticker {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    border-block: 1px solid #1a211b;
+    padding: 24px 5vw;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    align-items: center;
+    text-align: center;
+    color: #778078;
+    font: 12px DM Mono;
+    letter-spacing: 0.2em;
+    line-height: 1.5;
+    overflow: hidden;
+}
+
+.ticker span {
+    display: block;
+    min-width: 0;
+    white-space: nowrap;
+}
+
+
+/* =========================
+   TICKER — TABLET
+========================= */
+
+@media (max-width: 900px) {
 
     .ticker {
-        width: 100%;
-        max-width: 100%;
-        padding: 20px 18px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        white-space: nowrap;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px 12px;
+        padding: 22px 24px;
+        font-size: 10px;
+        letter-spacing: 0.13em;
     }
 
-
-    footer {
-        width: 100%;
-        max-width: 100%;
-    }
 }
+
+
+/* =========================
+   TICKER — MOBILE
+========================= */
+
+@media (max-width: 560px) {
+
+    .ticker {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px 8px;
+        padding: 20px 12px;
+        font-size: 8px;
+        letter-spacing: 0.08em;
+        line-height: 1.5;
+        text-align: center;
+    }
+
+    .ticker span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: clip;
+    }
+
+}
+
+
