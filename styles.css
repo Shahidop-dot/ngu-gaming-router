@@ -1044,3 +1044,438 @@ footer .brand {
         overflow-x: auto;
     }
 }
+/* =========================
+   NGU ROUTER DETAIL PAGE
+========================= */
+
+.router-detail {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: #070a08;
+    color: #f2f5f0;
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .25s ease;
+}
+
+.router-detail.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+body.router-detail-open {
+    overflow: hidden;
+}
+
+.router-detail-inner {
+    max-width: 1450px;
+    margin: auto;
+    padding: 35px 5vw 100px;
+}
+
+.router-back {
+    background: transparent;
+    border: 1px solid #303830;
+    color: #aeb5ae;
+    padding: 13px 18px;
+    cursor: pointer;
+    font: 11px DM Mono;
+    letter-spacing: .12em;
+}
+
+.router-back:hover {
+    color: #9cff19;
+    border-color: #9cff19;
+}
+
+.router-detail-grid {
+    display: grid;
+    grid-template-columns: 1.15fr .85fr;
+    gap: 70px;
+    margin-top: 45px;
+    align-items: start;
+}
+
+
+/* =========================
+   DETAIL GALLERY
+========================= */
+
+.detail-gallery {
+    position: relative;
+    background: #f5f5f3;
+    border: 1px solid #273027;
+    overflow: hidden;
+}
+
+.detail-gallery-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.detail-gallery-track::-webkit-scrollbar {
+    height: 5px;
+}
+
+.detail-gallery-slide {
+    position: relative;
+    flex: 0 0 100%;
+    height: 560px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    scroll-snap-align: start;
+}
+
+.detail-gallery-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.detail-photo-tag {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    background: #9cff19;
+    color: #071007;
+    padding: 8px 12px;
+    font: 700 10px DM Mono;
+    letter-spacing: .12em;
+    z-index: 2;
+}
+
+.detail-gallery-hint {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    background: rgba(7,10,8,.9);
+    color: #9cff19;
+    padding: 8px 11px;
+    font: 10px DM Mono;
+    letter-spacing: .1em;
+    pointer-events: none;
+}
+
+.detail-no-image {
+    height: 560px;
+    display: grid;
+    place-items: center;
+    color: #9cff19;
+    font: 700 55px DM Mono;
+    letter-spacing: .25em;
+}
+
+
+/* =========================
+   DETAIL INFORMATION
+========================= */
+
+.router-detail-info {
+    padding-top: 10px;
+}
+
+.detail-badge {
+    display: inline-block;
+    background: #9cff19;
+    color: #071007;
+    padding: 8px 12px;
+    font: 700 10px DM Mono;
+    letter-spacing: .1em;
+}
+
+.router-detail-info h1 {
+    font: 700 clamp(45px, 5vw, 75px) / .95 Space Grotesk;
+    margin: 25px 0;
+}
+
+.detail-description {
+    color: #929a94;
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+.detail-spec-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 35px;
+    border-top: 1px solid #273027;
+    border-left: 1px solid #273027;
+}
+
+.detail-spec-grid div {
+    padding: 20px;
+    border-right: 1px solid #273027;
+    border-bottom: 1px solid #273027;
+}
+
+.detail-spec-grid small,
+.detail-price-box small {
+    display: block;
+    color: #69736b;
+    font: 10px DM Mono;
+    letter-spacing: .12em;
+    margin-bottom: 8px;
+}
+
+.detail-spec-grid strong {
+    display: block;
+    font: 600 17px Space Grotesk;
+}
+
+.detail-price-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-top: 25px;
+    padding: 25px;
+    background: #0c120e;
+    border: 1px solid #293129;
+}
+
+.detail-price-box strong {
+    font: 700 27px Space Grotesk;
+}
+
+.stock-status {
+    font: 700 10px DM Mono;
+    letter-spacing: .08em;
+}
+
+.in-stock {
+    color: #9cff19;
+}
+
+.out-stock {
+    color: #7b847d;
+}
+
+.detail-actions {
+    margin-top: 20px;
+}
+
+.detail-whatsapp {
+    display: block;
+    text-align: center;
+    background: #9cff19;
+    color: #071007;
+    padding: 18px;
+    font-weight: 900;
+}
+
+
+/* =========================
+   SPECIFICATIONS
+========================= */
+
+.detail-specifications {
+    margin-top: 110px;
+    border-top: 1px solid #151c16;
+    padding-top: 80px;
+}
+
+.detail-section-heading span,
+.ngu-detail-features > div:first-child > span {
+    color: #788279;
+    font: 11px DM Mono;
+    letter-spacing: .18em;
+}
+
+.detail-section-heading h2,
+.ngu-detail-features h2 {
+    font: 700 clamp(40px, 5vw, 70px) / .95 Space Grotesk;
+    margin: 20px 0 45px;
+}
+
+.detail-section-heading h2 span,
+.ngu-detail-features h2 span {
+    color: #9cff19;
+}
+
+.specification-list {
+    border-top: 1px solid #283028;
+}
+
+.specification-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    padding: 20px 10px;
+    border-bottom: 1px solid #202820;
+}
+
+.specification-row span {
+    color: #7e8880;
+    font: 11px DM Mono;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+
+.specification-row strong {
+    color: #f2f5f0;
+    font: 600 15px Space Grotesk;
+}
+
+
+/* =========================
+   NGU GAMING FEATURES
+========================= */
+
+.ngu-detail-features {
+    display: grid;
+    grid-template-columns: .8fr 1.2fr;
+    gap: 80px;
+    margin-top: 110px;
+    padding-top: 80px;
+    border-top: 1px solid #151c16;
+}
+
+.ngu-feature-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: #283028;
+    border: 1px solid #283028;
+}
+
+.ngu-feature-list > div {
+    background: #0a0f0b;
+    padding: 28px;
+    min-height: 190px;
+}
+
+.ngu-feature-list b {
+    display: block;
+    color: #9cff19;
+    font: 11px DM Mono;
+    margin-bottom: 25px;
+}
+
+.ngu-feature-list strong {
+    display: block;
+    font: 600 20px Space Grotesk;
+}
+
+.ngu-feature-list p {
+    color: #7f8981;
+    line-height: 1.7;
+    font-size: 13px;
+}
+
+.detail-bottom {
+    margin-top: 70px;
+}
+
+
+/* =========================
+   DETAIL MOBILE
+========================= */
+
+@media (max-width: 900px) {
+
+    .router-detail-inner {
+        padding: 25px 24px 80px;
+    }
+
+    .router-detail-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .detail-gallery-slide {
+        height: 420px;
+    }
+
+    .detail-no-image {
+        height: 420px;
+    }
+
+    .ngu-detail-features {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+}
+
+
+@media (max-width: 560px) {
+
+    .router-detail-inner {
+        padding: 18px 18px 60px;
+    }
+
+    .router-detail-grid {
+        margin-top: 30px;
+        gap: 25px;
+    }
+
+    .detail-gallery-slide {
+        height: 280px;
+        padding: 12px;
+    }
+
+    .detail-no-image {
+        height: 280px;
+    }
+
+    .detail-photo-tag {
+        left: 8px;
+        top: 8px;
+        padding: 5px 7px;
+        font-size: 7px;
+    }
+
+    .detail-gallery-hint {
+        right: 8px;
+        bottom: 8px;
+        padding: 5px 7px;
+        font-size: 7px;
+    }
+
+    .router-detail-info h1 {
+        font-size: 42px;
+    }
+
+    .detail-description {
+        font-size: 15px;
+    }
+
+    .detail-spec-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-price-box {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .detail-specifications {
+        margin-top: 70px;
+        padding-top: 55px;
+    }
+
+    .specification-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .ngu-detail-features {
+        margin-top: 70px;
+        padding-top: 55px;
+    }
+
+    .ngu-feature-list {
+        grid-template-columns: 1fr;
+    }
+
+}
