@@ -2,6 +2,7 @@ const SUPABASE_URL = "https://khglefqussfkwmayfzqt.supabase.co";
 const SUPABASE_KEY = "sb_publishable_vLxoVA_v7VvnbQpSPzWfIw_ZoaiXrFz";
 
 let data = [];
+let routerReturnScrollY = 0;
 
 const products = document.querySelector("#products");
 const table = document.querySelector("#table");
@@ -13,7 +14,13 @@ const count = document.querySelector("#count");
 ========================= */
 
 function escapeHTML(value) {
-  if (value === null || value === undefined) return "";
+
+  if (
+    value === null ||
+    value === undefined
+  ) {
+    return "";
+  }
 
   return String(value)
     .replace(/&/g, "&amp;")
@@ -21,17 +28,24 @@ function escapeHTML(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+
 }
 
 
 function waLink(name) {
+
   const msg = encodeURIComponent(
     `Hi NGU, I'm interested in the ${name}. Please send me availability, price and gaming configuration details.`
   );
 
   return `https://wa.me/923700821811?text=${msg}`;
+
 }
 
+
+/* =========================
+   PRICE
+========================= */
 
 function getPrice(router) {
 
@@ -41,44 +55,45 @@ function getPrice(router) {
     router.price !== undefined &&
     router.price !== ""
   ) {
-    return `PKR ${Number(router.price).toLocaleString()}`;
+
+    return `PKR ${Number(
+      router.price
+    ).toLocaleString()}`;
+
   }
 
   return "Price on request";
+
 }
 
 
+/* =========================
+   STOCK
+========================= */
+
 function getStock(router) {
 
-  const stock = Number(router.stock || 0);
+  const stock =
+    Number(router.stock || 0);
+
 
   if (stock > 0) {
+
     return `
       <span class="stock-status in-stock">
         ● IN STOCK
       </span>
     `;
+
   }
+
 
   return `
     <span class="stock-status out-stock">
       ● CURRENTLY UNAVAILABLE
     </span>
   `;
-}
 
-
-/* =========================
-   OPEN ROUTER
-   USE HASH — NOT router.html
-========================= */
-
-function goToRouter(id) {
-
-  if (!id) return;
-
-  window.location.hash =
-    `router/${encodeURIComponent(id)}`;
 }
 
 
@@ -92,22 +107,61 @@ function imageFallback(img) {
 
     img.dataset.fallbackTried = "1";
 
-    const original = img.src;
+    const original =
+      img.src;
+
 
     img.src =
       "https://wsrv.nl/?url=" +
       encodeURIComponent(original);
 
     return;
+
   }
+
 
   img.style.display = "none";
 
-  const parent = img.parentElement;
+
+  const parent =
+    img.parentElement;
+
 
   if (parent) {
-    parent.classList.add("image-broken");
+
+    parent.classList.add(
+      "image-broken"
+    );
+
   }
+
+}
+
+
+/* =========================
+   OPEN ROUTER
+   REMEMBERS SCROLL POSITION
+========================= */
+
+function goToRouter(id) {
+
+  if (!id) return;
+
+
+  /*
+    Remember exactly where the
+    visitor was in the catalog.
+  */
+
+  routerReturnScrollY =
+    window.scrollY ||
+    window.pageYOffset ||
+    0;
+
+
+  window.location.hash =
+    `router/${encodeURIComponent(id)}`;
+
 }
 
 
@@ -119,21 +173,25 @@ async function loadProducts() {
 
   try {
 
-    const productResponse = await fetch(
-      `${SUPABASE_URL}/rest/v1/products?select=*`,
-      {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`
+    const productResponse =
+      await fetch(
+        `${SUPABASE_URL}/rest/v1/products?select=*`,
+        {
+          headers: {
+            apikey: SUPABASE_KEY,
+            Authorization:
+              `Bearer ${SUPABASE_KEY}`
+          }
         }
-      }
-    );
+      );
 
 
     if (!productResponse.ok) {
+
       throw new Error(
         `Products error: ${productResponse.status}`
       );
+
     }
 
 
@@ -141,21 +199,29 @@ async function loadProducts() {
       await productResponse.json();
 
 
-    const imageResponse = await fetch(
-      `${SUPABASE_URL}/rest/v1/product_images?select=product_id,image_url,alt_text,sort_order&order=sort_order.asc`,
-      {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`
+    /* =========================
+       LOAD ADDITIONAL IMAGES
+    ========================= */
+
+    const imageResponse =
+      await fetch(
+        `${SUPABASE_URL}/rest/v1/product_images?select=product_id,image_url,alt_text,sort_order&order=sort_order.asc`,
+        {
+          headers: {
+            apikey: SUPABASE_KEY,
+            Authorization:
+              `Bearer ${SUPABASE_KEY}`
+          }
         }
-      }
-    );
+      );
 
 
     if (!imageResponse.ok) {
+
       throw new Error(
         `Product images error: ${imageResponse.status}`
       );
+
     }
 
 
@@ -163,21 +229,36 @@ async function loadProducts() {
       await imageResponse.json();
 
 
+    /* =========================
+       GROUP IMAGES
+    ========================= */
+
     const imageMap = {};
 
 
     imageRows.forEach(image => {
 
-      if (!imageMap[image.product_id]) {
-        imageMap[image.product_id] = [];
+      if (
+        !imageMap[
+          image.product_id
+        ]
+      ) {
+
+        imageMap[
+          image.product_id
+        ] = [];
+
       }
 
 
       if (image.image_url) {
 
-        imageMap[image.product_id].push({
+        imageMap[
+          image.product_id
+        ].push({
 
-          url: image.image_url,
+          url:
+            image.image_url,
 
           alt:
             image.alt_text || "",
@@ -192,129 +273,159 @@ async function loadProducts() {
     });
 
 
-    data = rows
+    /* =========================
+       BUILD CATALOG
+    ========================= */
 
-      .filter(
-        x => x.active !== false
-      )
+    data =
+      rows
 
-      .map(x => {
+        .filter(
+          x => x.active !== false
+        )
 
-        const extraImages =
-          imageMap[x.id] || [];
+        .map(x => {
+
+          const extraImages =
+            imageMap[x.id] || [];
 
 
-        const allImages = [];
+          const allImages = [];
 
 
-        /* Main product image */
+          /*
+            MAIN IMAGE
+          */
 
-        if (x.image_url) {
+          if (x.image_url) {
 
-          allImages.push({
+            allImages.push({
 
-            url:
-              x.image_url,
+              url:
+                x.image_url,
 
-            alt:
+              alt:
+                x.name ||
+                "NGU router"
+
+            });
+
+          }
+
+
+          /*
+            ADDITIONAL IMAGES
+          */
+
+          extraImages
+
+            .sort(
+              (a, b) =>
+                a.order - b.order
+            )
+
+            .forEach(image => {
+
+              /*
+                Prevent duplicates.
+              */
+
+              if (
+                !allImages.some(
+                  existing =>
+                    existing.url ===
+                    image.url
+                )
+              ) {
+
+                allImages.push({
+
+                  url:
+                    image.url,
+
+                  alt:
+                    image.alt ||
+                    `${x.name} NGU router`
+
+                });
+
+              }
+
+            });
+
+
+          return {
+
+            id:
+              x.id,
+
+            name:
               x.name ||
-              "NGU router"
+              "Unknown router",
 
-          });
+            wifi:
+              x.wifi ||
+              "",
 
-        }
+            cls:
+              x.wifi_class ||
+              "",
+
+            bands:
+              x.bands ||
+              "",
+
+            best:
+              x.best_for ||
+              "",
+
+            image:
+              x.image_url ||
+              "",
+
+            /*
+              Maximum 3 images per router.
+            */
+
+            images:
+              allImages.slice(
+                0,
+                3
+              ),
+
+            note:
+              x.description ||
+              "NGU custom gaming configuration.",
+
+            price:
+              x.price,
+
+            priceOnRequest:
+              x.price_on_request,
+
+            stock:
+              x.stock,
+
+            specifications:
+              x.specifications ||
+              {}
+
+          };
+
+        });
 
 
-        /* Additional images */
-
-        extraImages
-
-          .sort(
-            (a, b) =>
-              a.order - b.order
-          )
-
-          .forEach(image => {
-
-            if (
-              !allImages.some(
-                existing =>
-                  existing.url === image.url
-              )
-            ) {
-
-              allImages.push({
-
-                url:
-                  image.url,
-
-                alt:
-                  image.alt ||
-                  `${x.name} NGU router`
-
-              });
-
-            }
-
-          });
-
-
-        return {
-
-          id:
-            x.id,
-
-          name:
-            x.name ||
-            "Unknown router",
-
-          wifi:
-            x.wifi ||
-            "",
-
-          cls:
-            x.wifi_class ||
-            "",
-
-          bands:
-            x.bands ||
-            "",
-
-          best:
-            x.best_for ||
-            "",
-
-          image:
-            x.image_url ||
-            "",
-
-          images:
-            allImages.slice(0, 3),
-
-          note:
-            x.description ||
-            "NGU custom gaming configuration.",
-
-          price:
-            x.price,
-
-          priceOnRequest:
-            x.price_on_request,
-
-          stock:
-            x.stock,
-
-          specifications:
-            x.specifications ||
-            {}
-
-        };
-
-      });
-
+    /*
+      Render catalog.
+    */
 
     render();
 
+
+    /*
+      If the URL already contains
+      #router/ID, open that router.
+    */
 
     handleRoute();
 
@@ -328,6 +439,7 @@ async function loadProducts() {
 
 
     products.innerHTML = `
+
       <div class="empty">
 
         <strong>
@@ -339,6 +451,7 @@ async function loadProducts() {
         </p>
 
       </div>
+
     `;
 
 
@@ -359,82 +472,124 @@ function renderGallery(router) {
   const images =
     router.images &&
     router.images.length
-      ? router.images
-      : router.image
-        ? [{
-            url:
-              router.image,
 
-            alt:
-              router.name
-          }]
+      ? router.images
+
+      : router.image
+
+        ? [
+            {
+              url:
+                router.image,
+
+              alt:
+                router.name
+            }
+          ]
+
         : [];
 
+
+  /*
+    No image.
+  */
 
   if (!images.length) {
 
     return `
-      <div class="product-image fallback">
+
+      <div
+        class="product-image fallback"
+      >
 
         <div class="mini">
           NGU
         </div>
 
       </div>
+
     `;
 
   }
 
 
+  /*
+    Gallery.
+  */
+
   return `
+
     <div
       class="product-gallery"
-      data-router-image="${escapeHTML(router.id)}"
     >
 
-      <div class="gallery-track">
+      <div
+        class="gallery-track"
+      >
 
-        ${images.map((image, index) => `
+        ${images.map(
+          (image, index) => `
 
-          <div class="gallery-slide">
-
-            <img
-              src="${escapeHTML(image.url)}"
-              alt="${escapeHTML(
-                image.alt || router.name
-              )}"
-              loading="lazy"
-              onerror="imageFallback(this)"
+            <div
+              class="gallery-slide"
             >
 
-            ${
-              index === 0
-                ? `
-                  <span class="ngu-photo-tag">
-                    NGU ROUTER
-                  </span>
-                `
-                : ""
-            }
+              <img
+                src="${escapeHTML(
+                  image.url
+                )}"
 
-          </div>
+                alt="${escapeHTML(
+                  image.alt ||
+                  router.name
+                )}"
 
-        `).join("")}
+                loading="lazy"
+
+                onerror="imageFallback(this)"
+              >
+
+
+              ${
+                index === 0
+                  ? `
+
+                    <span
+                      class="ngu-photo-tag"
+                    >
+                      NGU ROUTER
+                    </span>
+
+                  `
+                  : ""
+              }
+
+            </div>
+
+          `
+        ).join("")}
 
       </div>
 
 
       ${
         images.length > 1
+
           ? `
-            <div class="gallery-hint">
+
+            <div
+              class="gallery-hint"
+            >
               SWIPE →
             </div>
+
           `
+
           : ""
       }
 
     </div>
+
   `;
 
 }
@@ -444,32 +599,65 @@ function renderGallery(router) {
    RENDER PRODUCTS
 ========================= */
 
-function render(filter = "all") {
+function render(
+  filter = "all"
+) {
 
   const d =
     filter === "all"
+
       ? data
+
       : data.filter(
-          x => x.wifi === filter
+          x =>
+            x.wifi === filter
         );
 
 
   count.textContent =
-    d.length + " systems";
+    d.length +
+    " systems";
 
 
   products.innerHTML =
 
     d.map(x => {
 
+      /*
+        Create router URL.
+      */
+
+      const routerHash =
+        `#router/${encodeURIComponent(
+          x.id
+        )}`;
+
+
       return `
 
         <article
           class="product"
-          data-router-id="${escapeHTML(x.id)}"
+          data-router-id="${escapeHTML(
+            x.id
+          )}"
         >
 
-          ${renderGallery(x)}
+          <!-- CLICKABLE ROUTER IMAGE -->
+
+          <a
+            href="${routerHash}"
+            class="router-card-link router-image-link"
+            data-router-id="${escapeHTML(
+              x.id
+            )}"
+            aria-label="View details for ${escapeHTML(
+              x.name
+            )}"
+          >
+
+            ${renderGallery(x)}
+
+          </a>
 
 
           <div class="body">
@@ -479,16 +667,29 @@ function render(filter = "all") {
             </span>
 
 
-            <h3
-              class="router-name"
-              data-router-id="${escapeHTML(x.id)}"
-            >
-              ${escapeHTML(x.name)}
+            <!-- CLICKABLE ROUTER NAME -->
+
+            <h3>
+
+              <a
+                href="${routerHash}"
+                class="router-card-link router-name-link"
+                data-router-id="${escapeHTML(
+                  x.id
+                )}"
+              >
+                ${escapeHTML(
+                  x.name
+                )}
+              </a>
+
             </h3>
 
 
             <p>
-              ${escapeHTML(x.note)}
+              ${escapeHTML(
+                x.note
+              )}
             </p>
 
 
@@ -496,31 +697,45 @@ function render(filter = "all") {
 
               ${
                 x.wifi
+
                   ? `
                     <span>
-                      ${escapeHTML(x.wifi)}
+                      ${escapeHTML(
+                        x.wifi
+                      )}
                     </span>
                   `
+
                   : ""
               }
+
 
               ${
                 x.cls
+
                   ? `
                     <span>
-                      ${escapeHTML(x.cls)}
+                      ${escapeHTML(
+                        x.cls
+                      )}
                     </span>
                   `
+
                   : ""
               }
 
+
               ${
                 x.bands
+
                   ? `
                     <span>
-                      ${escapeHTML(x.bands)}
+                      ${escapeHTML(
+                        x.bands
+                      )}
                     </span>
                   `
+
                   : ""
               }
 
@@ -537,8 +752,11 @@ function render(filter = "all") {
 
 
               <a
-                href="#router/${encodeURIComponent(x.id)}"
+                href="${routerHash}"
                 class="router-details-link"
+                data-router-id="${escapeHTML(
+                  x.id
+                )}"
               >
                 View details →
               </a>
@@ -554,6 +772,10 @@ function render(filter = "all") {
     }).join("");
 
 
+  /*
+    Comparison table.
+  */
+
   table.innerHTML =
 
     d.map(x => `
@@ -561,23 +783,33 @@ function render(filter = "all") {
       <tr>
 
         <td>
-          ${escapeHTML(x.name)}
+          ${escapeHTML(
+            x.name
+          )}
         </td>
 
         <td>
-          ${escapeHTML(x.wifi)}
+          ${escapeHTML(
+            x.wifi
+          )}
         </td>
 
         <td>
-          ${escapeHTML(x.cls)}
+          ${escapeHTML(
+            x.cls
+          )}
         </td>
 
         <td>
-          ${escapeHTML(x.bands)}
+          ${escapeHTML(
+            x.bands
+          )}
         </td>
 
         <td>
-          ${escapeHTML(x.best)}
+          ${escapeHTML(
+            x.best
+          )}
         </td>
 
       </tr>
@@ -602,6 +834,11 @@ function openRouter(router) {
     );
 
 
+  /*
+    Create detail container
+    the first time it is opened.
+  */
+
   if (!detail) {
 
     detail =
@@ -625,26 +862,36 @@ function openRouter(router) {
   const images =
     router.images &&
     router.images.length
-      ? router.images
-      : router.image
-        ? [{
-            url:
-              router.image,
 
-            alt:
-              router.name
-          }]
+      ? router.images
+
+      : router.image
+
+        ? [
+            {
+              url:
+                router.image,
+
+              alt:
+                router.name
+            }
+          ]
+
         : [];
 
 
   const specifications =
-    router.specifications || {};
+    router.specifications ||
+    {};
 
 
   detail.innerHTML = `
 
-    <div class="router-detail-inner">
+    <div
+      class="router-detail-inner"
+    >
 
+      <!-- BACK -->
 
       <button
         class="router-back"
@@ -654,12 +901,18 @@ function openRouter(router) {
       </button>
 
 
-      <div class="router-detail-grid">
+      <div
+        class="router-detail-grid"
+      >
 
 
-        <!-- GALLERY -->
+        <!-- =====================
+             DETAIL GALLERY
+        ====================== -->
 
-        <div class="detail-gallery">
+        <div
+          class="detail-gallery"
+        >
 
           <div
             class="detail-gallery-track"
@@ -680,22 +933,29 @@ function openRouter(router) {
                           src="${escapeHTML(
                             image.url
                           )}"
+
                           alt="${escapeHTML(
                             image.alt ||
                             router.name
                           )}"
+
                           onerror="imageFallback(this)"
                         >
 
+
                         ${
                           index === 0
+
                             ? `
+
                               <span
                                 class="detail-photo-tag"
                               >
                                 NGU ROUTER
                               </span>
+
                             `
+
                             : ""
                         }
 
@@ -705,9 +965,13 @@ function openRouter(router) {
                   ).join("")
 
                 : `
-                  <div class="detail-no-image">
+
+                  <div
+                    class="detail-no-image"
+                  >
                     NGU
                   </div>
+
                 `
             }
 
@@ -716,24 +980,34 @@ function openRouter(router) {
 
           ${
             images.length > 1
+
               ? `
+
                 <div
                   class="detail-gallery-hint"
                 >
                   SWIPE FOR MORE →
                 </div>
+
               `
+
               : ""
           }
 
         </div>
 
 
-        <!-- INFORMATION -->
+        <!-- =====================
+             INFORMATION
+        ====================== -->
 
-        <div class="router-detail-info">
+        <div
+          class="router-detail-info"
+        >
 
-          <span class="detail-badge">
+          <span
+            class="detail-badge"
+          >
             NGU GAMING ROUTER
           </span>
 
@@ -754,7 +1028,9 @@ function openRouter(router) {
           </p>
 
 
-          <div class="detail-spec-grid">
+          <div
+            class="detail-spec-grid"
+          >
 
             <div>
 
@@ -764,7 +1040,8 @@ function openRouter(router) {
 
               <strong>
                 ${escapeHTML(
-                  router.wifi || "—"
+                  router.wifi ||
+                  "—"
                 )}
               </strong>
 
@@ -779,7 +1056,8 @@ function openRouter(router) {
 
               <strong>
                 ${escapeHTML(
-                  router.cls || "—"
+                  router.cls ||
+                  "—"
                 )}
               </strong>
 
@@ -794,7 +1072,8 @@ function openRouter(router) {
 
               <strong>
                 ${escapeHTML(
-                  router.bands || "—"
+                  router.bands ||
+                  "—"
                 )}
               </strong>
 
@@ -809,7 +1088,8 @@ function openRouter(router) {
 
               <strong>
                 ${escapeHTML(
-                  router.best || "—"
+                  router.best ||
+                  "—"
                 )}
               </strong>
 
@@ -818,7 +1098,11 @@ function openRouter(router) {
           </div>
 
 
-          <div class="detail-price-box">
+          <!-- PRICE -->
+
+          <div
+            class="detail-price-box"
+          >
 
             <div>
 
@@ -842,7 +1126,11 @@ function openRouter(router) {
           </div>
 
 
-          <div class="detail-actions">
+          <!-- WHATSAPP -->
+
+          <div
+            class="detail-actions"
+          >
 
             <a
               class="detail-whatsapp"
@@ -857,13 +1145,14 @@ function openRouter(router) {
 
           </div>
 
-
         </div>
 
       </div>
 
 
-      <!-- FULL SPECIFICATIONS -->
+      <!-- =====================
+           FULL SPECIFICATIONS
+      ====================== -->
 
       <section
         class="detail-specifications"
@@ -878,7 +1167,10 @@ function openRouter(router) {
           </span>
 
           <h2>
-            Full <span>Specifications.</span>
+            Full
+            <span>
+              Specifications.
+            </span>
           </h2>
 
         </div>
@@ -896,6 +1188,7 @@ function openRouter(router) {
               ? Object.entries(
                   specifications
                 )
+
                 .map(
                   ([key, value]) => `
 
@@ -904,6 +1197,7 @@ function openRouter(router) {
                     >
 
                       <span>
+
                         ${escapeHTML(
                           String(key)
                             .replace(
@@ -916,9 +1210,12 @@ function openRouter(router) {
                                 c.toUpperCase()
                             )
                         )}
+
                       </span>
 
+
                       <strong>
+
                         ${
                           typeof value ===
                           "boolean"
@@ -931,15 +1228,18 @@ function openRouter(router) {
                                 value
                               )
                         }
+
                       </strong>
 
                     </div>
 
                   `
                 )
+
                 .join("")
 
               : `
+
                 <div
                   class="specification-row"
                 >
@@ -953,6 +1253,7 @@ function openRouter(router) {
                   </strong>
 
                 </div>
+
               `
           }
 
@@ -961,7 +1262,9 @@ function openRouter(router) {
       </section>
 
 
-      <!-- NGU FEATURES -->
+      <!-- =====================
+           NGU FEATURES
+      ====================== -->
 
       <section
         class="ngu-detail-features"
@@ -974,7 +1277,10 @@ function openRouter(router) {
           </span>
 
           <h2>
-            Tuned for <span>gaming.</span>
+            Tuned for
+            <span>
+              gaming.
+            </span>
           </h2>
 
         </div>
@@ -995,9 +1301,9 @@ function openRouter(router) {
             </strong>
 
             <p>
-              Gaming-focused traffic management
-              designed to keep important traffic
-              responsive.
+              Gaming-focused traffic
+              management designed to keep
+              important traffic responsive.
             </p>
 
           </div>
@@ -1014,8 +1320,9 @@ function openRouter(router) {
             </strong>
 
             <p>
-              Configuration focused on responsive
-              gaming and consistent network behavior.
+              Configuration focused on
+              responsive gaming and
+              consistent network behavior.
             </p>
 
           </div>
@@ -1032,8 +1339,9 @@ function openRouter(router) {
             </strong>
 
             <p>
-              Wireless configuration tuned for
-              everyday use and gaming workloads.
+              Wireless configuration tuned
+              for everyday use and gaming
+              workloads.
             </p>
 
           </div>
@@ -1050,8 +1358,9 @@ function openRouter(router) {
             </strong>
 
             <p>
-              NGU configuration designed around
-              the hardware's capabilities.
+              NGU configuration designed
+              around the hardware's
+              capabilities.
             </p>
 
           </div>
@@ -1061,7 +1370,11 @@ function openRouter(router) {
       </section>
 
 
-      <div class="detail-bottom">
+      <!-- BOTTOM BACK BUTTON -->
+
+      <div
+        class="detail-bottom"
+      >
 
         <button
           class="router-back"
@@ -1088,32 +1401,54 @@ function openRouter(router) {
   );
 
 
+  /*
+    Go to top of detail page.
+  */
+
   window.scrollTo({
     top: 0,
+    left: 0,
     behavior: "instant"
   });
 
 
-  document
-    .querySelector(
+  /*
+    Back buttons.
+  */
+
+  const backTop =
+    document.querySelector(
       "#router-back"
-    )
-    .onclick =
+    );
+
+
+  if (backTop) {
+
+    backTop.onclick =
       closeRouter;
 
+  }
 
-  document
-    .querySelector(
+
+  const backBottom =
+    document.querySelector(
       "#router-back-bottom"
-    )
-    .onclick =
+    );
+
+
+  if (backBottom) {
+
+    backBottom.onclick =
       closeRouter;
+
+  }
 
 }
 
 
 /* =========================
    CLOSE ROUTER
+   RESTORE EXACT POSITION
 ========================= */
 
 function closeRouter() {
@@ -1125,9 +1460,11 @@ function closeRouter() {
 
 
   if (detail) {
+
     detail.classList.remove(
       "active"
     );
+
   }
 
 
@@ -1135,6 +1472,11 @@ function closeRouter() {
     "router-detail-open"
   );
 
+
+  /*
+    Remove #router/ID without
+    reloading the page.
+  */
 
   if (
     window.location.hash.startsWith(
@@ -1152,9 +1494,27 @@ function closeRouter() {
   }
 
 
-  window.scrollTo({
-    top: 0,
-    behavior: "instant"
+  /*
+    IMPORTANT:
+    Return to exactly where the
+    visitor opened the router.
+  */
+
+  requestAnimationFrame(() => {
+
+    window.scrollTo({
+
+      top:
+        routerReturnScrollY,
+
+      left:
+        0,
+
+      behavior:
+        "instant"
+
+    });
+
   });
 
 }
@@ -1194,13 +1554,21 @@ function handleRoute() {
 
 
     if (router) {
-      openRouter(router);
+
+      openRouter(
+        router
+      );
+
     }
 
   }
 
 }
 
+
+/* =========================
+   HASH CHANGE
+========================= */
 
 window.addEventListener(
   "hashchange",
@@ -1209,188 +1577,54 @@ window.addEventListener(
 
 
 /* =========================
-   PRODUCT CLICK SYSTEM
+   PRODUCT CLICK
+   IMAGE + NAME + DETAILS
 ========================= */
-
-/*
-   Clicking:
-
-   • router picture
-   • router name
-   • View details
-
-   all use the SAME #router/ID route.
-
-   This fixes the 404 problem caused by
-   router.html?id=...
-*/
-
-let galleryTouchStartX = 0;
-let galleryTouchMoved = false;
-
-
-products.addEventListener(
-  "touchstart",
-  event => {
-
-    if (
-      event.target.closest(
-        ".gallery-track"
-      )
-    ) {
-
-      galleryTouchStartX =
-        event.touches[0].clientX;
-
-      galleryTouchMoved =
-        false;
-
-    }
-
-  },
-  {
-    passive: true
-  }
-);
-
-
-products.addEventListener(
-  "touchmove",
-  event => {
-
-    if (
-      event.target.closest(
-        ".gallery-track"
-      )
-    ) {
-
-      const currentX =
-        event.touches[0].clientX;
-
-      if (
-        Math.abs(
-          currentX -
-          galleryTouchStartX
-        ) > 10
-      ) {
-
-        galleryTouchMoved =
-          true;
-
-      }
-
-    }
-
-  },
-  {
-    passive: true
-  }
-);
-
 
 products.addEventListener(
   "click",
   event => {
 
     /*
-      Do not open details when the
-      user was actually swiping images.
+      Find any router link.
+      This includes:
+
+      - Router picture
+      - Router name
+      - View details
     */
 
-    if (galleryTouchMoved) {
-
-      galleryTouchMoved =
-        false;
-
-      return;
-
-    }
-
-
-    /*
-      WhatsApp / external links
-      should work normally.
-    */
-
-    if (
+    const link =
       event.target.closest(
-        "a[href^='https://wa.me']"
-      )
-    ) {
+        ".router-card-link, .router-details-link"
+      );
+
+
+    if (!link) {
       return;
     }
 
 
     /*
-      Existing View details button.
+      Do not interfere with
+      WhatsApp or other links.
     */
 
-    const detailsLink =
-      event.target.closest(
-        ".router-details-link"
-      );
+    const routerId =
+      link.dataset.routerId;
 
 
-    if (detailsLink) {
-
-      event.preventDefault();
-
-      const product =
-        detailsLink.closest(
-          ".product"
-        );
-
-
-      if (!product) return;
-
-
-      goToRouter(
-        product.dataset.routerId
-      );
-
+    if (!routerId) {
       return;
-
     }
 
 
-    /*
-      Router name.
-    */
-
-    const routerName =
-      event.target.closest(
-        ".router-name"
-      );
+    event.preventDefault();
 
 
-    if (routerName) {
-
-      goToRouter(
-        routerName.dataset.routerId
-      );
-
-      return;
-
-    }
-
-
-    /*
-      Router picture.
-    */
-
-    const gallery =
-      event.target.closest(
-        ".product-gallery"
-      );
-
-
-    if (gallery) {
-
-      goToRouter(
-        gallery.dataset.routerImage
-      );
-
-    }
+    goToRouter(
+      routerId
+    );
 
   }
 );
